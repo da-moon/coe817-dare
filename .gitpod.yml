@@ -1,0 +1,18 @@
+image:
+  file: contrib/gitpod/.gitpod.Dockerfile
+checkoutLocation: "go/src/github.com/da-moon/coe817-dare"
+workspaceLocation: "go/src/github.com/da-moon/coe817-dare"
+tasks:
+  - init: >
+      go get -u -v github.com/cuonglm/gocmt &&
+      go get -u -v github.com/mohae/nocomment/cmd/nocomment &&
+      go get -u -v honnef.co/go/tools/cmd/staticcheck &&
+      cd $GOPATH/src/honnef.co/go/tools/cmd/staticcheck &&
+      git checkout 2019.2 &&
+      go get &&
+      go install
+vscode:
+  extensions:
+    - wmaurer.change-case@1.0.0:EFbL568cjs07Ajw2vuXcpw==
+    - emeraldwalk.RunOnSave@0.2.0:6DpPyy2kCQ1Ug+O4phQ/Lw==
+    - vscode-snippet.snippet@0.8.0:heDB4eLEEI1w13OjYacLlQ==
