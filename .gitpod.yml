@@ -4,9 +4,9 @@ checkoutLocation: "go/src/github.com/da-moon/coe817-dare"
 workspaceLocation: "go/src/github.com/da-moon/coe817-dare"
 tasks:
   - init: >
-      go get -u -v github.com/cuonglm/gocmt &&
-      go get -u -v github.com/mohae/nocomment/cmd/nocomment &&
-      go get -u -v honnef.co/go/tools/cmd/staticcheck &&
+      GO111MODULE=off go get -u -v github.com/cuonglm/gocmt &&
+      GO111MODULE=off go get -u -v github.com/mohae/nocomment/cmd/nocomment &&
+      GO111MODULE=off go get -u -v honnef.co/go/tools/cmd/staticcheck &&
       cd $GOPATH/src/honnef.co/go/tools/cmd/staticcheck &&
       git checkout 2019.2 &&
       go get &&

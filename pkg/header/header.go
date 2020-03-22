@@ -69,3 +69,9 @@ func (h Header) FinalFragment() {
 	//  h[4] and 0111 1111 = 0xxx xxxx
 	h[NonceFieldStart] = h[NonceFieldStart] & 0x7F
 }
+
+// GetAdditionalData ... returns additional data
+// that is not nonce , in this case, only length
+func (h Header) GetAdditionalData() []byte {
+	return h[:NonceFieldSize]
+}

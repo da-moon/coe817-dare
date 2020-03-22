@@ -2,14 +2,19 @@ package config
 
 import (
 	"github.com/da-moon/coe817-dare/pkg/header"
+	humanize "github.com/dustin/go-humanize"
 )
 
 // Consts
 const (
 	// KeySize ...
 	KeySize = 32
-	// MaxPayloadSize ...
-	MaxPayloadSize = 1 << 16
+	// SeqTrackerBit ...
+	SeqTrackerBit = 8
+
+	// MaxPayloadSize : 64KB
+	// MaxPayloadSize = 1 << 16
+	MaxPayloadSize = 64 * humanize.KiByte
 	// TagSize ...
 	TagSize = 16
 	// Meta

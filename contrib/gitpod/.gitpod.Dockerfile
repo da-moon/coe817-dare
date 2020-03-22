@@ -24,4 +24,5 @@ RUN wget -q -O \
     chmod +x "/usr/bin/gitt"
 RUN gitt --init
 RUN echo 'export PATH="/workspace/coe817-dare/bin:$PATH"' >>~/.bashrc
+RUN echo 'export GO111MODULE=on' >>~/.bashrc
 CMD ["bash"]
