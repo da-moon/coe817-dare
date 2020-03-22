@@ -1,4 +1,4 @@
-include $(abspath $(dir $(lastword $(MAKEFILE_LIST)))/../base/base.mk)
+# include $(abspath $(dir $(lastword $(MAKEFILE_LIST)))/../base/base.mk)
 
 define rwildcard
 $(wildcard $1$2) $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2))

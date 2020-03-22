@@ -1,5 +1,4 @@
 # github.com/faiyaz7283/dcutil
-include $(abspath $(dir $(lastword $(MAKEFILE_LIST)))/../base/base.mk)
 # Convert string to upper
 define to_upper
 	$(1)=$$(echo $(2) | tr '[:lower:]' '[:upper:]')

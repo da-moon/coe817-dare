@@ -1,4 +1,3 @@
-include $(abspath $(dir $(lastword $(MAKEFILE_LIST)))/../string/string.mk)
 # github.com/faiyaz7283/dcutil
 define color_text
 	tput setaf $(1); \
@@ -28,23 +27,18 @@ endef
 # Container enter printing
 # $1 = command
 # $2 = container
-# $3 = shell
-# $4 = user
-define print_container_enter
+define print_running_env_enter
+	$(call trim, command, $(1)); \
 	$(call color_text, ${CYAN}, "Command: "); \
-	$(call color_text, ${WHITE},"$(1)\n"); \
-	$(call color_text, ${CYAN}, "Container: "); \
+	$(call color_text, ${WHITE},"$$command\n"); \
+	$(call color_text, ${CYAN}, "Environment: "); \
 	$(call color_text, ${WHITE},"$(2)\n"); \
-	$(call color_text, ${CYAN}, "Shell: "); \
-	$(call color_text, ${WHITE},"$(3)\n"); \
-	$(call color_text, ${CYAN}, "User: "); \
-	$(call color_text, ${WHITE},"$(4)\n"); \
 	$(call color_text, ${CYAN}, "Time: "); \
 	$(call color_text, ${WHITE},"$$(date '+%Y-%m-%d %H:%M:%S')\n\n")
 endef
 
 # Container exit printing
-define print_container_exit
+define print_running_env_exit
 	$(call color_text, 8, "\nExit; $$(date '+%Y-%m-%d %H:%M:%S')\n")
 endef
 

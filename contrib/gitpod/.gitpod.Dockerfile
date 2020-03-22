@@ -14,11 +14,14 @@ RUN shellcheck --version
 # adding shellcheck running
 RUN wget -q -O \
     /usr/bin/run-sc \
-    https://raw.githubusercontent.com/da-moon/core-utils/master/bin/run-sc
+    https://raw.githubusercontent.com/da-moon/core-utils/master/bin/run-sc && \
+    chmod +x "/usr/bin/run-sc"
 RUN curl -fsSL \
     https://raw.githubusercontent.com/da-moon/core-utils/master/bin/get-hashi | sudo bash -s --
-RUN wget -q -O /usr/bin/gitt https://raw.githubusercontent.com/da-moon/core-utils/master/bin/gitt
-RUN chmod +x "/usr/bin/gitt"
+RUN wget -q -O \
+    /usr/bin/gitt \
+    https://raw.githubusercontent.com/da-moon/core-utils/master/bin/gitt && \
+    chmod +x "/usr/bin/gitt"
 RUN gitt --init
-RUN echo 'export PATH="/workspace/bifrost/bin:$PATH"' >>~/.bashrc
+RUN echo 'export PATH="/workspace/coe817-dare/bin:$PATH"' >>~/.bashrc
 CMD ["bash"]
