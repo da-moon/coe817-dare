@@ -40,6 +40,7 @@ func (c *VersionCommand) Run(_ []string) int {
 }
 
 // Synopsis ...
-func (c *VersionCommand) Synopsis() string {
-	return fmt.Sprintf("Prints %s version", c.Name)
+func (c *VersionCommand) Synopsis() (s string) {
+	s = fmt.Sprintf("Prints %s version", c.Name)
+	return s
 }

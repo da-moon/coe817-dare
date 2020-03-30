@@ -1,19 +1,20 @@
 package main
 
 import (
+	"os"
+	"os/signal"
+
 	command "github.com/da-moon/coe817-dare/cmd/dare/command"
 	encrypt "github.com/da-moon/coe817-dare/cmd/dare/command/encrypt"
 	cli "github.com/mitchellh/cli"
-	"os"
-	"os/signal"
 )
 
 // Commands is the mapping of all the available Serf commands.
 var Commands map[string]cli.CommandFactory
 
 func init() {
-	ui := &cli.BasicUi{Writer: os.Stdout}
 
+	ui := &cli.BasicUi{Writer: os.Stdout}
 	Commands = map[string]cli.CommandFactory{
 		"encrypt": func() (cli.Command, error) {
 			return &encrypt.Command{
@@ -21,7 +22,6 @@ func init() {
 				ShutdownCh: make(chan struct{}),
 			}, nil
 		},
-
 		"keygen": func() (cli.Command, error) {
 			return &command.KeygenCommand{
 				Ui: ui,

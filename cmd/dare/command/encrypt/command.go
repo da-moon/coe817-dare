@@ -2,10 +2,6 @@ package encrypt
 
 import (
 	"fmt"
-	dare "github.com/da-moon/coe817-dare/dare"
-	view "github.com/da-moon/coe817-dare/internal/view"
-	logutils "github.com/hashicorp/logutils"
-	cli "github.com/mitchellh/cli"
 	"io"
 	"log"
 	"os"
@@ -13,6 +9,11 @@ import (
 	"strings"
 	"syscall"
 	"time"
+
+	dare "github.com/da-moon/coe817-dare/dare"
+	view "github.com/da-moon/coe817-dare/internal/view"
+	logutils "github.com/hashicorp/logutils"
+	cli "github.com/mitchellh/cli"
 )
 
 const (
