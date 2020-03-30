@@ -14,18 +14,19 @@ const (
 
 	// MaxPayloadSize : 64KB
 	// MaxPayloadSize = 1 << 16
-	MaxPayloadSize = 64 * humanize.KiByte
+	// MaxPayloadSize = 64 * humanize.KiByte
+	MaxPayloadSize = 64 * humanize.Byte
 	// TagSize ...
 	TagSize = 16
 	// Meta
 	MetadataSize = header.HeaderSize + TagSize
-	// MaxPackageSize ...
-	MaxPackageSize = MetadataSize + MaxPayloadSize
+	// MaxBufferSize ...
+	MaxBufferSize = MetadataSize + MaxPayloadSize
+	//
+	// for test ...
+	//
 	// MaxDecryptedSize ...
 	MaxDecryptedSize = 1 << 48
 	// MaxEncryptedSize ...
 	MaxEncryptedSize = MaxDecryptedSize + ((MetadataSize) * 1 << 32)
-
-	// MaxBufferSize ...
-	MaxBufferSize = MetadataSize + MaxPayloadSize
 )

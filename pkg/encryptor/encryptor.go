@@ -65,13 +65,9 @@ func (e *Encryptor) Read(p []byte) (int, error) {
 		count int
 		err   error
 	)
-	log.Debug(fmt.Sprintf("[ENCRYPTOR] finalized=%v firstread=%v lastByte=%v payload_len=%v",
-		e.finalized,
-		e.firstRead,
-		e.lastByte,
-		len(p),
-	),
-	)
+	// cases :
+	// 1 - size finalized
+	// 2 - not finalized
 	if e.firstRead {
 		e.firstRead = false
 		_, err = io.ReadFull(e.reader, e.buffer[header.HeaderSize:header.HeaderSize+1])
@@ -85,6 +81,14 @@ func (e *Encryptor) Read(p []byte) (int, error) {
 		}
 		e.lastByte = e.buffer[header.HeaderSize]
 	}
+	// log.Debug(fmt.Sprintf("#%d [ENCRYPTOR] finalized=%v firstread=%v lastByte=%v payload_len=%v",
+	// 	e.sequenceNumber,
+	// 	e.finalized,
+	// 	e.firstRead,
+	// 	e.lastByte,
+	// 	len(p),
+	// ),
+	// )
 
 	// write the buffered data to p
 	if e.offset > 0 {
@@ -110,19 +114,29 @@ func (e *Encryptor) Read(p []byte) (int, error) {
 	}
 	finalize := false
 	// as long as reader slice has capacity
+	// this for loop would read as long as slice to
+	// be populated is larger/equa to encrypted io reader
+	// underlying buffer
 	for len(p) >= config.MaxBufferSize {
+		log.Debug(fmt.Sprintf("#[ENCRYPTOR] seq=%v inside",
+			e.sequenceNumber,
+		),
+		)
 		e.buffer[header.HeaderSize] = e.lastByte
 		// Reading maximum possible amount
 		nn, err := io.ReadFull(
 			e.reader,
 			e.buffer[header.HeaderSize+1:header.HeaderSize+config.MaxPayloadSize+1],
 		)
-		if err != nil && err != io.EOF && err != io.ErrUnexpectedEOF {
+		if err != nil &&
+			err != io.EOF &&
+			err != io.ErrUnexpectedEOF {
 			err = stacktrace.Propagate(err, "[ERROR] Encryptor failed to read maximum payload from reader")
 			return count, err
 		}
 		// if we are reading less than 64KB , encryptor would seal and finalize
-		if err == io.EOF || err == io.ErrUnexpectedEOF {
+		if err == io.EOF ||
+			err == io.ErrUnexpectedEOF {
 			finalize = true
 			e.seal(p, e.buffer[header.HeaderSize:header.HeaderSize+1+nn], finalize)
 			return count + header.HeaderSize + segment.TagSize + 1 + nn, io.EOF
@@ -133,6 +147,11 @@ func (e *Encryptor) Read(p []byte) (int, error) {
 		p = p[config.MaxBufferSize:]
 		count += config.MaxBufferSize
 	}
+	log.Debug(fmt.Sprintf("#[ENCRYPTOR] seq=%v outside len=%v max buf=%v",
+		e.sequenceNumber,
+		len(p), config.MaxBufferSize,
+	),
+	)
 	if len(p) > 0 {
 		e.buffer[header.HeaderSize] = e.lastByte
 		nn, err := io.ReadFull(

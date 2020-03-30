@@ -9,6 +9,7 @@ import (
 
 	config "github.com/da-moon/coe817-dare/pkg/config"
 	errors "github.com/da-moon/coe817-dare/pkg/errors"
+	header "github.com/da-moon/coe817-dare/pkg/header"
 	segment "github.com/da-moon/coe817-dare/pkg/segment"
 	stacktrace "github.com/palantir/stacktrace"
 )
@@ -207,30 +208,30 @@ func (d *Decryptor) metadata(dst, src []byte) error {
 		err = stacktrace.Propagate(err, "[ERROR] Could not generate metadata for decryptor because current source length (%v) is lower than or equal to sum of header size constant (%v) and Tag size constant (%v)", len(src), header.HeaderSize, segment.TagSize)
 		return err
 	}
-	header := segment.Segment(src).Header()
-	if len(src) != header.HeaderSize+segment.TagSize+header.GetLength() {
+	h := segment.Segment(src).Header()
+	if len(src) != header.HeaderSize+segment.TagSize+h.GetLength() {
 		err := errors.ErrInvalidPayloadSize
-		err = stacktrace.Propagate(err, "[ERROR] Could not generate metadata for decryptor because current source length (%v) is not equal to the sum of header size constant (%v) and Tag size constant (%v) and header size (%v)", len(src), header.HeaderSize, segment.TagSize, header.GetLength())
+		err = stacktrace.Propagate(err, "[ERROR] Could not generate metadata for decryptor because current source length (%v) is not equal to the sum of header size constant (%v) and Tag size constant (%v) and header size (%v)", len(src), header.HeaderSize, segment.TagSize, h.GetLength())
 		return err
 	}
-	if !header.IsFinal() && header.GetLength() != config.MaxPayloadSize {
+	if !h.IsFinal() && h.GetLength() != config.MaxPayloadSize {
 		err := errors.ErrInvalidPayloadSize
-		err = stacktrace.Propagate(err, "[ERROR] Could not generate metadata for decryptor because unfinalized header length (%v) is not equal to the sum of max payload size constant (%v)", header.GetLength(), config.MaxPayloadSize)
+		err = stacktrace.Propagate(err, "[ERROR] Could not generate metadata for decryptor because unfinalized header length (%v) is not equal to the sum of max payload size constant (%v)", h.GetLength(), config.MaxPayloadSize)
 		return err
 	}
-	refNonce := header.GetNonce()
+	refNonce := h.GetNonce()
 	// refNonce := d.header.GetNonce()
-	if header.IsFinal() {
+	if h.IsFinal() {
 		d.finalized = true
 		// refNonce[0] |= config.HeaderFinalFlag
 		refNonce[0] = refNonce[0] & 0x7F
 
 	}
-	if subtle.ConstantTimeCompare(header.GetNonce(), refNonce[:]) != 1 {
+	if subtle.ConstantTimeCompare(h.GetNonce(), refNonce[:]) != 1 {
 		return errors.ErrNonceMismatch
 	}
 	var nonce [header.NonceFieldSize]byte
-	copy(nonce[:], header.GetNonce())
+	copy(nonce[:], h.GetNonce())
 	binary.LittleEndian.PutUint32(
 		nonce[config.SeqTrackerBit:],
 		binary.LittleEndian.Uint32(nonce[config.SeqTrackerBit:])^d.sequenceNumber,
@@ -243,7 +244,7 @@ func (d *Decryptor) metadata(dst, src []byte) error {
 		dst[:0],
 		nonce[:],
 		ciphertext,
-		header.GetAdditionalData(),
+		h.GetAdditionalData(),
 	)
 	if err != nil {
 		err = stacktrace.Propagate(err, errors.ErrAuthentication.Error())

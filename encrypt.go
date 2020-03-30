@@ -1,10 +1,10 @@
 package dare
 
 import (
-	config "github.com/da-moon/coe817-dare/pkg/config"
+	// config "github.com/da-moon/coe817-dare/pkg/config"
 	encryptor "github.com/da-moon/coe817-dare/pkg/encryptor"
-	header "github.com/da-moon/coe817-dare/pkg/header"
-	segment "github.com/da-moon/coe817-dare/pkg/segment"
+	// header "github.com/da-moon/coe817-dare/pkg/header"
+	// segment "github.com/da-moon/coe817-dare/pkg/segment"
 	"io"
 )
 
@@ -24,10 +24,12 @@ func Encrypt(writer io.Writer, reader io.Reader, key []byte) (n int64, err error
 	if err != nil {
 		return 0, err
 	}
-	size := header.HeaderSize + config.MaxPayloadSize + segment.TagSize
-	return io.CopyBuffer(
-		writer,
-		encryptReader,
-		make([]byte, size),
-	)
+	// size := header.HeaderSize + config.MaxPayloadSize + segment.TagSize
+	// size := header.HeaderSize + config.MaxPayloadSize
+	return io.Copy(writer, encryptReader)
+	// return io.CopyBuffer(
+	// 	writer,
+	// 	encryptReader,
+	// 	make([]byte, size),
+	// )
 }

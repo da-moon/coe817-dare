@@ -24,10 +24,51 @@ func TestBasicEncrypt(t *testing.T) {
 	log.SetTestLogger(t)
 	tests := []TestCase{
 		{
-			datasize:    (3 * config.MaxPayloadSize) + (config.MaxPayloadSize / 2),
-			buffersize:  config.MaxPayloadSize + 1,
-			payloadsize: config.MaxPayloadSize,
+			datasize: config.MaxBufferSize / 2,
 		},
+		{
+			datasize: config.MaxBufferSize,
+		},
+		{
+			datasize: config.MaxBufferSize + 1,
+		},
+		{
+			datasize: 2 * config.MaxBufferSize,
+		},
+		{
+			datasize: 2*config.MaxBufferSize + 1,
+		},
+		// {
+		// 	datasize: 2*config.MaxBufferSize + 6,
+		// 	// buffersize:  config.MaxPayloadSize + 1,
+		// 	// payloadsize: config.MaxPayloadSize,
+		// },
+
+		// {
+		// 	datasize: (2 * config.MaxPayloadSize),
+		// 	// buffersize:  config.MaxPayloadSize + 1,
+		// 	// payloadsize: config.MaxPayloadSize,
+		// },
+		// {
+		// 	datasize: 1024*1024 + 1,
+		// 	// buffersize:  config.MaxPayloadSize + 1,
+		// 	// payloadsize: config.MaxPayloadSize,
+		// },
+		// {
+		// 	datasize: 3*config.MaxPayloadSize + 1,
+		// 	// buffersize:  3 * config.MaxPayloadSize,
+		// 	// payloadsize: config.MaxPayloadSize,
+		// },
+		// {
+		// 	datasize: 1024 * 1024,
+		// 	// buffersize:  2 * 1024 * 1024,
+		// 	// payloadsize: config.MaxPayloadSize,
+		// },
+		// {
+		// 	datasize:    (3 * config.MaxPayloadSize) + (config.MaxPayloadSize / 2),
+		// 	buffersize:  config.MaxPayloadSize + 1,
+		// 	payloadsize: config.MaxPayloadSize,
+		// },
 	}
 	for _, test := range tests {
 		t.Run("", func(t *testing.T) {
@@ -48,14 +89,26 @@ func TestBasicEncrypt(t *testing.T) {
 			data := make([]byte, test.datasize)
 			_, err = io.ReadFull(rand.Reader, data)
 			assert.NoError(t, err, "could not generate random data for encryption")
-			input := bytes.NewReader(data)
 			output := bytes.NewBuffer(nil)
 			_, err = dare.Encrypt(
 				output,
-				input,
+				bytes.NewReader(data),
+				key[:],
+			)
+			assert.NoError(t, err, "could not encrypt data")
+
+			decrypted := bytes.NewBuffer(nil)
+			n, err := dare.Decrypt(
+				decrypted,
+				output,
 				key[:],
 			)
 			assert.NoError(t, err)
+			assert.Equal(t, int64(test.datasize), n, "decrypt expected read=%v actual read=%v", int64(test.datasize), n)
+			assert.True(t, bytes.Equal(data, decrypted.Bytes()))
+			// if !bytes.Equal(data, decrypted.Bytes()) {
+			// 	t.Errorf("Failed to encrypt and decrypt data")
+			// }
 		})
 	}
 }
