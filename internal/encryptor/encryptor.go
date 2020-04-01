@@ -9,8 +9,8 @@ import (
 	"fmt"
 	config "github.com/da-moon/coe817-dare/internal/config"
 	header "github.com/da-moon/coe817-dare/internal/header"
-	log "github.com/da-moon/coe817-dare/pkg/log"
 	segment "github.com/da-moon/coe817-dare/internal/segment"
+	log "github.com/da-moon/coe817-dare/pkg/log"
 	stacktrace "github.com/palantir/stacktrace"
 	"io"
 )

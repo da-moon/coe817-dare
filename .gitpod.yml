@@ -15,8 +15,6 @@ tasks:
       make build
 vscode:
   extensions:
-    - johnpapa.vscode-peacock@3.6.0:CsNfwbVCBE07R7RfF/hb2w==
-    - karigari.chat@0.33.0:R2rVC3VyfF/CknJtUo7ghg==
     - wmaurer.change-case@1.0.0:EFbL568cjs07Ajw2vuXcpw==
     - emeraldwalk.RunOnSave@0.2.0:6DpPyy2kCQ1Ug+O4phQ/Lw==
     - vscode-snippet.snippet@0.8.0:heDB4eLEEI1w13OjYacLlQ==

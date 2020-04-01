@@ -19,7 +19,7 @@ var _ cli.Command = &KeygenCommand{}
 
 // Run ...
 func (c *KeygenCommand) Run(_ []string) int {
-	const length=26
+	const length = 26
 	key := make([]byte, length)
 	n, err := rand.Reader.Read(key)
 	if err != nil {

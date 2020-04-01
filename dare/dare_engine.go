@@ -2,14 +2,14 @@ package dare
 
 import (
 	"context"
+	"crypto/rand"
+	"crypto/sha256"
+	"encoding/hex"
 	hkdf "golang.org/x/crypto/hkdf"
+	"io"
 	"log"
 	"os"
 	"sync"
-	"encoding/hex"
-	"io"
-	"crypto/rand"
-	"crypto/sha256"
 
 	stacktrace "github.com/palantir/stacktrace"
 )
@@ -53,19 +53,19 @@ func CreateDareEngine(config *CoreConfig) (*DareEngine, error) {
 	masterkey, err := hex.DecodeString(config.MasterKey)
 	if err != nil {
 		err = stacktrace.Propagate(err, "could not initialize encryptor engine due to failure in decoding masterkey")
-		return nil,err
+		return nil, err
 	}
 	_, err = io.ReadFull(rand.Reader, nonce[:])
 	if err != nil {
 		err = stacktrace.Propagate(err, "could not initialize encryptor engine due to failure in generating random data for nonce")
-		return nil,err
+		return nil, err
 	}
 	// driving master key ...
 	kdf := hkdf.New(sha256.New, masterkey, nonce[:], nil)
 	_, err = io.ReadFull(kdf, key[:])
 	if err != nil {
 		err = stacktrace.Propagate(err, "initialize encryptor engine due to failure in driving an encryption key. masterkey=%v nonce=%v", masterkey, nonce[:])
-		return nil,err
+		return nil, err
 	}
 	result := &DareEngine{
 		config:     config,
@@ -135,7 +135,7 @@ func (s *DareEngine) Encrypt(source string, destination string) error {
 		defer dstFile.Close()
 	}
 	if err != nil {
-		err = stacktrace.Propagate(err, "Could not create empty file at (%s) ",destination)
+		err = stacktrace.Propagate(err, "Could not create empty file at (%s) ", destination)
 		return err
 	}
 	_, err = Encrypt(
@@ -145,6 +145,7 @@ func (s *DareEngine) Encrypt(source string, destination string) error {
 	)
 	return nil
 }
+
 // Run ...
 func (s *DareEngine) Decrypt(source string, destination string) error {
 
@@ -179,7 +180,7 @@ func (s *DareEngine) Decrypt(source string, destination string) error {
 		defer dstFile.Close()
 	}
 	if err != nil {
-		err = stacktrace.Propagate(err, "Could not create empty file at (%s) ",destination)
+		err = stacktrace.Propagate(err, "Could not create empty file at (%s) ", destination)
 		return err
 	}
 	_, err = Encrypt(
