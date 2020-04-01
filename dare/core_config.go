@@ -41,7 +41,7 @@ func (c *CoreConfig) Init() {
 		if len(c.MasterKey) == 0 {
 			c.MasterKey = os.Getenv("DARE_MASTER_KEY")
 			if len(c.MasterKey) == 0 {
-				c.MasterKey = "MyCoolMasterKey"
+				c.MasterKey = "b6c4bba7a385aef779965cb0b7d66316ab091704042606797871"
 			}
 		}
 		logOutput := c.LogOutput

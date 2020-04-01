@@ -5,7 +5,7 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/hex"
-	dare "github.com/da-moon/coe817-dare"
+	dare "github.com/da-moon/coe817-dare/dare"
 	config "github.com/da-moon/coe817-dare/internal/config"
 	log "github.com/da-moon/coe817-dare/pkg/log"
 	assert "github.com/stretchr/testify/assert"

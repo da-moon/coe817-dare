@@ -1,7 +1,7 @@
 package command
 
 import (
-	"encoding/base64"
+	"encoding/hex"
 	"testing"
 
 	"github.com/mitchellh/cli"
@@ -16,12 +16,12 @@ func TestKeygenCommand(t *testing.T) {
 	}
 
 	output := ui.OutputWriter.String()
-	result, err := base64.StdEncoding.DecodeString(output)
+	result, err := hex.DecodeString(output)
 	if err != nil {
 		t.Fatalf("err: %v", err)
 	}
 
-	if len(result) != 32 {
+	if len(result) != 26 {
 		t.Fatalf("bad: %#v", result)
 	}
 }
