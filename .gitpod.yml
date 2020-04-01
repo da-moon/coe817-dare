@@ -17,8 +17,6 @@ vscode:
   extensions:
     - johnpapa.vscode-peacock@3.6.0:CsNfwbVCBE07R7RfF/hb2w==
     - karigari.chat@0.33.0:R2rVC3VyfF/CknJtUo7ghg==
-    - ms-vsliveshare.vsliveshare@1.0.1891:UG6yubHlRzrRsx2ahj2hcw==
-    - ms-vsliveshare.vsliveshare-audio@0.1.80:eYYKy0uRKtOpcTKQM9r3wA==
     - wmaurer.change-case@1.0.0:EFbL568cjs07Ajw2vuXcpw==
     - emeraldwalk.RunOnSave@0.2.0:6DpPyy2kCQ1Ug+O4phQ/Lw==
     - vscode-snippet.snippet@0.8.0:heDB4eLEEI1w13OjYacLlQ==
@@ -30,9 +28,6 @@ vscode:
     - lkytal.pomodoro@1.1.3:002RH2DJY9QFkufZ2J2U7w==
     - piotrpalarz.vscode-gitignore-generator@1.0.1:iNyE+Zbg+DD32/VtNMgUrg==
     - aaron-bond.better-comments@2.0.5:YKNfOclR4e8XAxlj4xp2AA==
-    - lostintangent.vsls-pomodoro@0.1.0:1/5d7S1y4mmwTTNO0nr5KQ==
-    - lostintangent.vsls-whiteboard@0.0.9:slBjdTRB4bhjUi7La2CjQA==
     - CodeStream.codestream@6.5.0:s+H7WY/FQ66qVvU5gAEkjQ==
     - softwaredotcom.swdc-vscode@2.1.45:pmY4dKH5T5NIhWJJpHr5Gw==
-    - vsls-contrib.spaces@0.1.2:GhMWwlztJ60Jlwr4kKMEnA==
     - wayou.vscode-todo-highlight@1.0.4:8IqxuxCVol2WnScJc5xVzg==
