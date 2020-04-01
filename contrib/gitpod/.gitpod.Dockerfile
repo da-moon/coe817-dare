@@ -2,7 +2,6 @@ FROM gitpod/workspace-full-vnc
 USER root
 ARG SHELLCHECK_VERSION=stable
 ARG SHELLCHECK_FORMAT=gcc
-RUN sudo apt-get update && sudo apt-get install -yq libssl1.0.2 libkrb5-3 zlib1g libicu57 gnome-keyring libsecret-1-0 desktop-file-utils x11-utils
 RUN curl -fsSL \
     https://raw.githubusercontent.com/da-moon/core-utils/master/bin/fast-apt | sudo bash -s -- \
     --init || true;
