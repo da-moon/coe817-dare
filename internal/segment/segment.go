@@ -1,7 +1,7 @@
 package segment
 
 import (
-	header "github.com/da-moon/coe817-dare/pkg/header"
+	header "github.com/da-moon/coe817-dare/internal/header"
 )
 
 const (

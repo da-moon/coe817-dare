@@ -1,10 +1,10 @@
 package dare
 
 import (
-	// config "github.com/da-moon/coe817-dare/pkg/config"
-	encryptor "github.com/da-moon/coe817-dare/pkg/encryptor"
-	// header "github.com/da-moon/coe817-dare/pkg/header"
-	// segment "github.com/da-moon/coe817-dare/pkg/segment"
+	// config "github.com/da-moon/coe817-dare/internal/config"
+	encryptor "github.com/da-moon/coe817-dare/internal/encryptor"
+	// header "github.com/da-moon/coe817-dare/internal/header"
+	// segment "github.com/da-moon/coe817-dare/internal/segment"
 	"io"
 )
 

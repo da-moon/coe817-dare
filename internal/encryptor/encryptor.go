@@ -7,10 +7,10 @@ import (
 	"encoding/binary"
 
 	"fmt"
-	config "github.com/da-moon/coe817-dare/pkg/config"
-	header "github.com/da-moon/coe817-dare/pkg/header"
+	config "github.com/da-moon/coe817-dare/internal/config"
+	header "github.com/da-moon/coe817-dare/internal/header"
 	log "github.com/da-moon/coe817-dare/pkg/log"
-	segment "github.com/da-moon/coe817-dare/pkg/segment"
+	segment "github.com/da-moon/coe817-dare/internal/segment"
 	stacktrace "github.com/palantir/stacktrace"
 	"io"
 )

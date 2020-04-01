@@ -1,7 +1,7 @@
 package config
 
 import (
-	"github.com/da-moon/coe817-dare/pkg/header"
+	"github.com/da-moon/coe817-dare/internal/header"
 	humanize "github.com/dustin/go-humanize"
 )
 

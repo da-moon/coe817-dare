@@ -6,7 +6,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	dare "github.com/da-moon/coe817-dare"
-	config "github.com/da-moon/coe817-dare/pkg/config"
+	config "github.com/da-moon/coe817-dare/internal/config"
 	log "github.com/da-moon/coe817-dare/pkg/log"
 	assert "github.com/stretchr/testify/assert"
 	hkdf "golang.org/x/crypto/hkdf"

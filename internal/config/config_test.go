@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"testing"
 
-	config "github.com/da-moon/coe817-dare/pkg/config"
-	header "github.com/da-moon/coe817-dare/pkg/header"
-	segment "github.com/da-moon/coe817-dare/pkg/segment"
+	config "github.com/da-moon/coe817-dare/internal/config"
+	header "github.com/da-moon/coe817-dare/internal/header"
+	segment "github.com/da-moon/coe817-dare/internal/segment"
 	stacktrace "github.com/palantir/stacktrace"
 	assert "github.com/stretchr/testify/assert"
 )

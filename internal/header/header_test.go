@@ -4,7 +4,7 @@ import (
 	"crypto/rand"
 	"io"
 
-	header "github.com/da-moon/coe817-dare/pkg/header"
+	header "github.com/da-moon/coe817-dare/internal/header"
 	assert "github.com/stretchr/testify/assert"
 
 	"testing"

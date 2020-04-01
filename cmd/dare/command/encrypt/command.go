@@ -11,7 +11,7 @@ import (
 	"time"
 
 	dare "github.com/da-moon/coe817-dare/dare"
-	view "github.com/da-moon/coe817-dare/internal/view"
+	view "github.com/da-moon/coe817-dare/pkg/view"
 	logutils "github.com/hashicorp/logutils"
 	cli "github.com/mitchellh/cli"
 )
