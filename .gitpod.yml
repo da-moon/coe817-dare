@@ -15,6 +15,10 @@ tasks:
       make build
 vscode:
   extensions:
+    - johnpapa.vscode-peacock@3.6.0:CsNfwbVCBE07R7RfF/hb2w==
+    - karigari.chat@0.33.0:R2rVC3VyfF/CknJtUo7ghg==
+    - ms-vsliveshare.vsliveshare@1.0.1891:UG6yubHlRzrRsx2ahj2hcw==
+    - ms-vsliveshare.vsliveshare-audio@0.1.80:eYYKy0uRKtOpcTKQM9r3wA==
     - wmaurer.change-case@1.0.0:EFbL568cjs07Ajw2vuXcpw==
     - emeraldwalk.RunOnSave@0.2.0:6DpPyy2kCQ1Ug+O4phQ/Lw==
     - vscode-snippet.snippet@0.8.0:heDB4eLEEI1w13OjYacLlQ==
@@ -24,7 +28,6 @@ vscode:
     - humao.rest-client@0.23.2:EcQzdx/LsXrhATjZFVSutw==
     - alefragnani.Bookmarks@11.0.0:m2p0avZpvPtfi0p13tawPA==
     - lkytal.pomodoro@1.1.3:002RH2DJY9QFkufZ2J2U7w==
-    - ms-vsliveshare.vsliveshare-pack@0.3.2:0K1J2luvqWif20PhMHupAA==
     - piotrpalarz.vscode-gitignore-generator@1.0.1:iNyE+Zbg+DD32/VtNMgUrg==
     - aaron-bond.better-comments@2.0.5:YKNfOclR4e8XAxlj4xp2AA==
     - lostintangent.vsls-pomodoro@0.1.0:1/5d7S1y4mmwTTNO0nr5KQ==
