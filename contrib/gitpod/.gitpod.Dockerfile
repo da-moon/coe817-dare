@@ -5,7 +5,7 @@ ARG SHELLCHECK_FORMAT=gcc
 # installing base deps
 RUN curl -fsSL \
     https://raw.githubusercontent.com/da-moon/core-utils/master/bin/fast-apt | sudo bash -s -- \
-    --init
+    --init || true;
 # installing shellcheck
 RUN aria2c "https://storage.googleapis.com/shellcheck/shellcheck-${SHELLCHECK_VERSION}.linux.x86_64.tar.xz"
 RUN tar -xvf shellcheck-"${SHELLCHECK_VERSION}".linux.x86_64.tar.xz
@@ -22,7 +22,7 @@ RUN wget -q -O \
     /usr/bin/gitt \
     https://raw.githubusercontent.com/da-moon/core-utils/master/bin/gitt && \
     chmod +x "/usr/bin/gitt"
-RUN gitt --init
+RUN gitt --init || true;
 RUN wget -O ~/vsls-reqs https://aka.ms/vsls-linux-prereq-script && chmod +x ~/vsls-reqs && ~/vsls-reqs
 RUN echo 'export PATH="/workspace/coe817-dare/bin:$PATH"' >>~/.bashrc
 RUN echo 'export GO111MODULE=on' >>~/.bashrc
