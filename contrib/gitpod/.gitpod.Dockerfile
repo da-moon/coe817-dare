@@ -7,15 +7,6 @@ RUN curl -fsSL \
     --init || true;
 # installing and setting up protobuf compiler
 RUN apt-get install -yq protobuf-compiler
-RUN go get -v github.com/golang/protobuf/protoc-gen-go
-RUN go get -v github.com/gogo/protobuf/proto
-RUN go get -v github.com/gogo/protobuf/jsonpb
-RUN go get -v github.com/gogo/protobuf/protoc-gen-gogo
-RUN go get -v github.com/gogo/protobuf/gogoproto
-RUN go get -v github.com/gogo/protobuf/protoc-gen-gofast
-RUN go get -v github.com/gogo/protobuf/protoc-gen-gogofast
-RUN go get -v github.com/gogo/protobuf/protoc-gen-gogofaster
-RUN go get -v github.com/gogo/protobuf/protoc-gen-gogoslick
 # installing shellcheck
 RUN aria2c "https://storage.googleapis.com/shellcheck/shellcheck-${SHELLCHECK_VERSION}.linux.x86_64.tar.xz"
 RUN tar -xvf shellcheck-"${SHELLCHECK_VERSION}".linux.x86_64.tar.xz
