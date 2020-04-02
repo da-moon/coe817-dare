@@ -11,7 +11,6 @@ require (
 	github.com/hashicorp/logutils v1.0.0
 	github.com/json-iterator/go v1.1.9
 	github.com/kr/pretty v0.1.0 // indirect
-	github.com/minio/sha256-simd v0.1.1
 	github.com/mitchellh/cli v1.1.0
 	github.com/mitchellh/mapstructure v1.2.2
 	github.com/palantir/stacktrace v0.0.0-20161112013806-78658fd2d177

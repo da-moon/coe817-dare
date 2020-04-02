@@ -1,4 +1,4 @@
-package hashreader
+package hashsink
 
 import (
 	stacktrace "github.com/palantir/stacktrace"

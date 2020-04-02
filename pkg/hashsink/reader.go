@@ -1,19 +1,18 @@
-package hashreader
+package hashsink
 
 import (
 	"bytes"
 	"crypto/md5"
+	"crypto/sha256"
 	"encoding/base64"
 	"encoding/hex"
 	"hash"
 	"io"
-
-	sha256 "github.com/minio/sha256-simd"
 )
 
 // Reader ...
 type Reader struct {
-	src        io.Reader
+	reader     io.Reader
 	size       int64
 	actualSize int64
 
@@ -22,8 +21,8 @@ type Reader struct {
 }
 
 // New ...
-func New(src io.Reader, size int64, md5Hex, sha256Hex string, actualSize int64) (*Reader, error) {
-	if _, ok := src.(*Reader); ok {
+func New(reader io.Reader, size int64, md5Hex, sha256Hex string, actualSize int64) (*Reader, error) {
+	if _, ok := reader.(*Reader); ok {
 		return nil, errNestedReader
 	}
 
@@ -46,12 +45,12 @@ func New(src io.Reader, size int64, md5Hex, sha256Hex string, actualSize int64) 
 		md5Hash = md5.New()
 	}
 	if size >= 0 {
-		src = io.LimitReader(src, size)
+		reader = io.LimitReader(reader, size)
 	}
 	return &Reader{
 		md5sum:     md5sum,
 		sha256sum:  sha256sum,
-		src:        src,
+		reader:     reader,
 		size:       size,
 		md5Hash:    md5Hash,
 		sha256Hash: sha256Hash,
@@ -61,7 +60,7 @@ func New(src io.Reader, size int64, md5Hex, sha256Hex string, actualSize int64) 
 
 // Read ...
 func (r *Reader) Read(p []byte) (n int, err error) {
-	n, err = r.src.Read(p)
+	n, err = r.reader.Read(p)
 	if n > 0 {
 		if r.md5Hash != nil {
 			r.md5Hash.Write(p[:n])

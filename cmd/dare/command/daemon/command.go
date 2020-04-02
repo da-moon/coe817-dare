@@ -37,6 +37,7 @@ func (c *Command) Run(args []string) int {
 		OutputPrefix: "==> ",
 		InfoPrefix:   "    ",
 		ErrorPrefix:  "==> ",
+		WarnPrefix:   "==> ",
 		Ui:           c.Ui,
 	}
 
@@ -56,7 +57,7 @@ func (c *Command) Run(args []string) int {
 	defer core.Shutdown()
 	err := core.Start()
 	if err != nil {
-		c.Ui.Error(fmt.Sprintf("Failed to start the dare daemon core: %v", err))
+		c.Ui.Error(fmt.Sprintf("[ERROR] Failed to start the dare daemon core: %v", err))
 		return 1
 	}
 	apiEngine := c.startAPIEngine(config, core, logWriter, logOutput)
@@ -108,7 +109,7 @@ WAIT:
 	c.Ui.Output("Gracefully shutting down core...")
 	go func() {
 		if err := core.Shutdown(); err != nil {
-			c.Ui.Error(fmt.Sprintf("Error: %s", err))
+			c.Ui.Error(fmt.Sprintf("[ERROR]: %s", err.Error()))
 			return
 		}
 		close(gracefulCh)
@@ -128,7 +129,7 @@ func (c *Command) handleReload(config *Config, core *Core) *Config {
 	c.Ui.Output("Reloading configuration...")
 	newConf := c.readConfig()
 	if newConf == nil {
-		c.Ui.Error(fmt.Sprintf("Failed to reload configs"))
+		c.Ui.Error(fmt.Sprintf("[ERROR] Failed to reload configs"))
 		return config
 	}
 
@@ -137,7 +138,7 @@ func (c *Command) handleReload(config *Config, core *Core) *Config {
 		c.logFilter.SetMinLevel(minLevel)
 	} else {
 		c.Ui.Error(fmt.Sprintf(
-			"Invalid log level: %s. Valid log levels are: %v",
+			"[ERROR] Invalid log level: %s. Valid log levels are: %v",
 			minLevel, c.logFilter.Levels))
 
 		newConf.LogLevel = config.LogLevel
@@ -161,6 +162,8 @@ Usage: dare daemon [options]
 Options:
 
   -api-addr=127.0.0.1:8080 Address to bind the daemon json API listener.
+  -api-password=secret     Daemon API password, used as Authorization 
+                           header when sending JSON requests .
   -dev                     starts bifrost agent in development mode
   -config-file=foo         Path to a JSON file to read configuration from.
                            This can be specified multiple times.
@@ -182,7 +185,7 @@ func (c *Command) setupCore(config *Config, logOutput io.Writer) *Core {
 	c.Ui.Output("Creating dare daemon core...")
 	core, err := Create(config, coreConfig, logOutput)
 	if err != nil {
-		c.Ui.Error(fmt.Sprintf("Failed to create the dare daemon core: %v", err))
+		c.Ui.Error(fmt.Sprintf("[ERROR] Failed to create the dare daemon core: %v", err))
 		return nil
 	}
 	return core
@@ -196,7 +199,7 @@ func (c *Command) setupLoggers(config *Config) (*view.GatedWriter, *view.LogWrit
 	c.logFilter.Writer = logGate
 	if !view.ValidateLevelFilter(c.logFilter.MinLevel, c.logFilter) {
 		c.Ui.Error(fmt.Sprintf(
-			"Invalid log level: %s. Valid log levels are: %v",
+			"[ERROR] Invalid log level: %s. Valid log levels are: %v",
 			c.logFilter.MinLevel, c.logFilter.Levels))
 		return nil, nil, nil
 	}

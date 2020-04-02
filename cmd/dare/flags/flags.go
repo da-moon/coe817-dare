@@ -54,6 +54,13 @@ func APIAddrFlag(f *flag.FlagSet) *string {
 		"api address to bind the daemon to.")
 }
 
+// APIPasswordFlag ...
+func APIPasswordFlag(f *flag.FlagSet) *string {
+	result := os.Getenv("DARE_API_PASSWORD")
+	return f.String("api-password", result,
+		"daemon's authorization header value, used for authentication.")
+}
+
 // LogLevelFlag ...
 func LogLevelFlag(f *flag.FlagSet) *string {
 	result := os.Getenv("DARE_LOG_LEVEL")

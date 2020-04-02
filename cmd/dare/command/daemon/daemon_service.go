@@ -10,6 +10,12 @@ type Service struct {
 	logger *log.Logger
 }
 
+// Hash ...
+type Hash struct {
+	MD5    string
+	SHA256 string
+}
+
 // EncryptRequest ...
 type EncryptRequest struct {
 	Source      string
@@ -18,7 +24,8 @@ type EncryptRequest struct {
 
 // EncryptResponse ...
 type EncryptResponse struct {
-	MD5hash string
+	SourceHash      Hash
+	DestinationHash Hash
 }
 
 // Encrypt json rpc2.0 call that pparses variables and passes it to
@@ -30,9 +37,11 @@ type EncryptResponse struct {
 //   --arg method "Service.Encrypt" \
 //  '{"jsonrpc": "2.0", "method":$method,"params":{"source": $source, "destination":$destination},"id": $id}' | curl \
 //     -X POST  \
-//     --header "Content-type: application/json" \
+//  	--silent \
+//     --header "Authorization: 12445" \
+// 	--header "Content-type: application/json" \
 //     --data @- \
-//     http://127.0.0.1:8081/rpc
+//     http://127.0.0.1:8081/rpc  | jq -r
 func (s *Service) Encrypt(r *http.Request, req *EncryptRequest, res *EncryptResponse) error {
 	s.logger.Printf("[INFO] daemon-service: Encrypt Called")
 	return nil
@@ -46,7 +55,8 @@ type DecryptRequest struct {
 
 // DecryptResponse ...
 type DecryptResponse struct {
-	MD5hash string
+	SourceHash      Hash
+	DestinationHash Hash
 }
 
 // Decrypt json rpc2.0 call that parses variables and passes it to
@@ -57,10 +67,12 @@ type DecryptResponse struct {
 //   --arg id "2" \
 //   --arg method "Service.Decrypt" \
 //  '{"jsonrpc": "2.0", "method":$method,"params":{"source": $source, "destination":$destination},"id": $id}' | curl \
-//     -X POST  \
+// 	-X POST  \
+// 	--silent \
+//     --header "Authorization: 12445" \
 //     --header "Content-type: application/json" \
 //     --data @- \
-//     http://127.0.0.1:8081/rpc
+//     http://127.0.0.1:8081/rpc | jq -r
 func (s *Service) Decrypt(r *http.Request, req *DecryptRequest, res *DecryptResponse) error {
 	s.logger.Printf("[INFO] daemon-service: Decrypt Called")
 	return nil

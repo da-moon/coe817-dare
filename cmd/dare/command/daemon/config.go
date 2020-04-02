@@ -1,6 +1,7 @@
 package daemon
 
 import (
+	"crypto/rand"
 	"encoding/base64"
 	"encoding/json"
 	"flag"
@@ -15,7 +16,7 @@ import (
 	"strings"
 )
 
-// DefaultBindPort ...
+const jwtSecretLen = 32
 
 type dirEnts []os.FileInfo
 
@@ -25,6 +26,7 @@ type Config struct {
 	EncryptorPath   string `mapstructure:"encryptor_path"`
 	DecryptorPath   string `mapstructure:"decryptor_path"`
 	APIAddr         string `mapstructure:"api_addr"`
+	APIPassword     string `mapstructure:"api_password"`
 	LogLevel        string `mapstructure:"log_level"`
 	Protocol        int    `mapstructure:"protocol"`
 	DevelopmentMode bool   `mapstructure:"development_mode"`
@@ -36,11 +38,18 @@ func DefaultConfig() *Config {
 	if err != nil {
 		panic(err)
 	}
+	bytes := make([]byte, jwtSecretLen)
+	if _, err := rand.Read(bytes); err != nil {
+		panic(err)
+
+	}
+
 	return &Config{
 		LogLevel:        "INFO",
 		DevelopmentMode: false,
 		Protocol:        dare.CoreVersionMax,
 		APIAddr:         "127.0.0.1:8080",
+		APIPassword:     base64.StdEncoding.EncodeToString(bytes),
 		EncryptorPath:   filepath.Join(path, "encryptor"),
 		DecryptorPath:   filepath.Join(path, "decryptor"),
 	}
@@ -61,6 +70,7 @@ func (c *Command) readConfig() *Config {
 	encryptorPath := flags.EncryptorPathFlag(cmdFlags)
 	decryptorPath := flags.DecryptorPathFlag(cmdFlags)
 	apiAddr := flags.APIAddrFlag(cmdFlags)
+	apiPassword := flags.APIPasswordFlag(cmdFlags)
 	dev := flags.DevFlag(cmdFlags)
 	if err := cmdFlags.Parse(c.args); err != nil {
 		return nil
@@ -71,11 +81,21 @@ func (c *Command) readConfig() *Config {
 	cmdConfig.EncryptorPath = *encryptorPath
 	cmdConfig.DecryptorPath = *decryptorPath
 	cmdConfig.APIAddr = *apiAddr
+	cmdConfig.APIPassword = *apiPassword
+	if len(cmdConfig.APIPassword) == 0 {
+		c.Ui.Warn("[WARN] Daemon API password was not given. Generating a random one")
+		bytes := make([]byte, jwtSecretLen)
+		if _, err := rand.Read(bytes); err != nil {
+			c.Ui.Error(fmt.Sprintf("[ERROR]: %s", err.Error()))
+			return nil
+		}
+		cmdConfig.APIPassword = base64.StdEncoding.EncodeToString(bytes)
+	}
 	config := DefaultConfig()
 	if len(configFiles) > 0 {
 		fileConfig, err := ReadConfigPaths(configFiles)
 		if err != nil {
-			c.Ui.Error(err.Error())
+			c.Ui.Error(fmt.Sprintf("[ERROR]: %s", err.Error()))
 			return nil
 		}
 		config = MergeConfig(config, fileConfig)

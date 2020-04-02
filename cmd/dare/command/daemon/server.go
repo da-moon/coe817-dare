@@ -23,7 +23,7 @@ func (c *Command) startAPIEngine(
 	l, err := net.Listen("tcp", x.String())
 	if err != nil {
 		l.Close()
-		c.Ui.Error(fmt.Sprintf("Failed to start the daemon api listener: %v", err))
+		c.Ui.Error(fmt.Sprintf("[ERROR] Failed to start the daemon api listener: %v", err))
 		return nil
 	}
 	apiListener := &tcpKeepAliveListener{l.(*net.TCPListener)}
@@ -34,7 +34,8 @@ func (c *Command) startAPIEngine(
 		logOutput,
 		logWriter)
 	c.Ui.Output("Bifrost api running!")
-	c.Ui.Info(fmt.Sprintf("                   API addr: '%s'", config.APIAddr))
+	c.Ui.Info(fmt.Sprintf("                   API addr            : '%s'", config.APIAddr))
+	c.Ui.Info(fmt.Sprintf("                   Authorization Header: '%s'", config.APIPassword))
 
 	return ipc
 }
