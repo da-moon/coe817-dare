@@ -7,6 +7,20 @@ tasks:
       GO111MODULE=off go get -u -v github.com/cuonglm/gocmt &&
       GO111MODULE=off go get -u -v github.com/mohae/nocomment/cmd/nocomment &&
       GO111MODULE=off go get -u -v honnef.co/go/tools/cmd/staticcheck &&
+      GO111MODULE=off go get -u -d -v github.com/magefile/mage &&
+      GO111MODULE=off go get -v github.com/golang/protobuf/protoc-gen-go &&
+      GO111MODULE=off go get -v github.com/gogo/protobuf/proto &&
+      GO111MODULE=off go get -v github.com/gogo/protobuf/jsonpb &&
+      GO111MODULE=off go get -v github.com/gogo/protobuf/protoc-gen-gogo &&
+      GO111MODULE=off go get -v github.com/gogo/protobuf/gogoproto &&
+      GO111MODULE=off go get -v github.com/gogo/protobuf/protoc-gen-gofast &&
+      GO111MODULE=off go get -v github.com/gogo/protobuf/protoc-gen-gogofast &&
+      GO111MODULE=off go get -v github.com/gogo/protobuf/protoc-gen-gogofaster &&
+      GO111MODULE=off go get -v github.com/gogo/protobuf/protoc-gen-gogoslick &&
+      GO111MODULE=off go get -u -v github.com/gobuffalo/packr/v2/... &&
+      GO111MODULE=off go get -u -v github.com/gobuffalo/packr/v2/packr2 &&
+      cd $GOPATH/src/github.com/magefile/mage &&
+      GO111MODULE=off go run bootstrap.go &&
       cd $GOPATH/src/honnef.co/go/tools/cmd/staticcheck &&
       git checkout 2019.2 &&
       go get &&
