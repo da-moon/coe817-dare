@@ -1,4 +1,4 @@
-package encrypt
+package daemon
 
 import (
 	"fmt"
@@ -56,9 +56,14 @@ func (c *Command) Run(args []string) int {
 	defer core.Shutdown()
 	err := core.Start()
 	if err != nil {
-		c.Ui.Error(fmt.Sprintf("Failed to start the encryptor core: %v", err))
+		c.Ui.Error(fmt.Sprintf("Failed to start the dare daemon core: %v", err))
 		return 1
 	}
+	apiEngine := c.startAPIEngine(config, core, logWriter, logOutput)
+	if apiEngine == nil {
+		return 1
+	}
+
 	c.Ui.Output("Log data will now stream in as it occurs:\n")
 	logGate.Flush()
 	return c.handleSignals(
@@ -149,12 +154,13 @@ func (c *Command) Synopsis() string {
 // Help ...
 func (c *Command) Help() string {
 	helpText := `
-Usage: dare encrypt [options]
+Usage: dare daemon [options]
 
-  Starts starts encrypting a file runs until an interrupt is received. 
+  Starts data at rest encryption daemon. 
 
 Options:
 
+  -api-addr=127.0.0.1:8080 Address to bind the daemon json API listener.
   -dev                     starts bifrost agent in development mode
   -config-file=foo         Path to a JSON file to read configuration from.
                            This can be specified multiple times.
@@ -164,6 +170,8 @@ Options:
                            order.
   -log-level=info          Log level used in the encryption process.
   -master-key=foo          Master Key for encrypting data.
+  -encryptor-path=foo      Path encryptor plugin is located at.
+  -decryptor-path=foo      Path decryptor plugin is located at.
 `
 	return strings.TrimSpace(helpText)
 }
@@ -171,10 +179,10 @@ Options:
 func (c *Command) setupCore(config *Config, logOutput io.Writer) *Core {
 	coreConfig := dare.DefaultCoreConfig()
 	coreConfig.Protocol = uint8(config.Protocol)
-	c.Ui.Output("Creating encryptor core...")
+	c.Ui.Output("Creating dare daemon core...")
 	core, err := Create(config, coreConfig, logOutput)
 	if err != nil {
-		c.Ui.Error(fmt.Sprintf("Failed to create the encryptor core: %v", err))
+		c.Ui.Error(fmt.Sprintf("Failed to create the dare daemon core: %v", err))
 		return nil
 	}
 	return core

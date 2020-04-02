@@ -2,7 +2,7 @@ package command
 
 import (
 	"crypto/rand"
-	"encoding/hex"
+	"encoding/base64"
 	"fmt"
 	"strings"
 
@@ -30,8 +30,7 @@ func (c *KeygenCommand) Run(_ []string) int {
 		c.Ui.Error(fmt.Sprintf("Couldn't read enough entropy. Generate more entropy!"))
 		return 1
 	}
-
-	c.Ui.Output(hex.EncodeToString(key))
+	c.Ui.Output(base64.StdEncoding.EncodeToString(key))
 	return 0
 }
 

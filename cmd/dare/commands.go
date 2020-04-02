@@ -5,7 +5,7 @@ import (
 	"os/signal"
 
 	command "github.com/da-moon/coe817-dare/cmd/dare/command"
-	encrypt "github.com/da-moon/coe817-dare/cmd/dare/command/encrypt"
+	daemon "github.com/da-moon/coe817-dare/cmd/dare/command/daemon"
 	cli "github.com/mitchellh/cli"
 )
 
@@ -16,8 +16,8 @@ func init() {
 
 	ui := &cli.BasicUi{Writer: os.Stdout}
 	Commands = map[string]cli.CommandFactory{
-		"encrypt": func() (cli.Command, error) {
-			return &encrypt.Command{
+		"daemon": func() (cli.Command, error) {
+			return &daemon.Command{
 				Ui:         ui,
 				ShutdownCh: make(chan struct{}),
 			}, nil

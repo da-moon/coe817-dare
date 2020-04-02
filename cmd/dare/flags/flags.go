@@ -3,6 +3,7 @@ package flags
 import (
 	"flag"
 	"os"
+	"path/filepath"
 )
 
 // MasterKeyFlag ...
@@ -13,6 +14,44 @@ func MasterKeyFlag(f *flag.FlagSet) *string {
 	}
 	return f.String("master-key", result,
 		"Master Key used in encryption-decryption process.")
+}
+
+// EncryptorPathFlag ...
+func EncryptorPathFlag(f *flag.FlagSet) *string {
+	result := os.Getenv("DARE_ENCRYPTOR_PLUGIN")
+	if result == "" {
+		path, err := os.Getwd()
+		if err != nil {
+			panic(err)
+		}
+		result = filepath.Join(path, "encryptor")
+	}
+	return f.String("encryptor-path", result,
+		"encryptor plugin path.")
+}
+
+// DecryptorPathFlag ...
+func DecryptorPathFlag(f *flag.FlagSet) *string {
+	result := os.Getenv("DARE_DECRYPTOR_PLUGIN")
+	if result == "" {
+		path, err := os.Getwd()
+		if err != nil {
+			panic(err)
+		}
+		result = filepath.Join(path, "decryptor")
+	}
+	return f.String("decryptor-path", result,
+		"decryptor plugin path.")
+}
+
+// APIAddrFlag ...
+func APIAddrFlag(f *flag.FlagSet) *string {
+	result := os.Getenv("DARE_API_ADDRESS")
+	if result == "" {
+		result = "127.0.0.1:8080"
+	}
+	return f.String("api-addr", result,
+		"api address to bind the daemon to.")
 }
 
 // LogLevelFlag ...

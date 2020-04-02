@@ -1,4 +1,4 @@
-package encrypt
+package daemon
 
 import (
 	"encoding/base64"
@@ -22,6 +22,9 @@ type dirEnts []os.FileInfo
 // Config ...
 type Config struct {
 	MasterKey       string `mapstructure:"master_key"`
+	EncryptorPath   string `mapstructure:"encryptor_path"`
+	DecryptorPath   string `mapstructure:"decryptor_path"`
+	APIAddr         string `mapstructure:"api_addr"`
 	LogLevel        string `mapstructure:"log_level"`
 	Protocol        int    `mapstructure:"protocol"`
 	DevelopmentMode bool   `mapstructure:"development_mode"`
@@ -29,17 +32,24 @@ type Config struct {
 
 // DefaultConfig ...
 func DefaultConfig() *Config {
+	path, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
 	return &Config{
 		LogLevel:        "INFO",
 		DevelopmentMode: false,
 		Protocol:        dare.CoreVersionMax,
+		APIAddr:         "127.0.0.1:8080",
+		EncryptorPath:   filepath.Join(path, "encryptor"),
+		DecryptorPath:   filepath.Join(path, "decryptor"),
 	}
 }
 
 func (c *Command) readConfig() *Config {
 	var cmdConfig Config
 	var configFiles []string
-	const entrypoint = "encrypt"
+	const entrypoint = "daemon"
 	cmdFlags := flag.NewFlagSet(entrypoint, flag.ContinueOnError)
 	cmdFlags.Usage = func() { c.Ui.Output(c.Help()) }
 	cmdFlags.Var((*flags.AppendSliceValue)(&configFiles), "config-file",
@@ -48,6 +58,9 @@ func (c *Command) readConfig() *Config {
 		"directory of json files to read")
 	masterKey := flags.MasterKeyFlag(cmdFlags)
 	logLevl := flags.LogLevelFlag(cmdFlags)
+	encryptorPath := flags.EncryptorPathFlag(cmdFlags)
+	decryptorPath := flags.DecryptorPathFlag(cmdFlags)
+	apiAddr := flags.APIAddrFlag(cmdFlags)
 	dev := flags.DevFlag(cmdFlags)
 	if err := cmdFlags.Parse(c.args); err != nil {
 		return nil
@@ -55,6 +68,9 @@ func (c *Command) readConfig() *Config {
 	cmdConfig.DevelopmentMode = *dev
 	cmdConfig.LogLevel = *logLevl
 	cmdConfig.MasterKey = *masterKey
+	cmdConfig.EncryptorPath = *encryptorPath
+	cmdConfig.DecryptorPath = *decryptorPath
+	cmdConfig.APIAddr = *apiAddr
 	config := DefaultConfig()
 	if len(configFiles) > 0 {
 		fileConfig, err := ReadConfigPaths(configFiles)
@@ -117,6 +133,15 @@ func MergeConfig(a, b *Config) *Config {
 
 	if b.MasterKey != "" {
 		result.MasterKey = b.MasterKey
+	}
+	if b.EncryptorPath != "" {
+		result.EncryptorPath = b.EncryptorPath
+	}
+	if b.DecryptorPath != "" {
+		result.DecryptorPath = b.DecryptorPath
+	}
+	if b.APIAddr != "" {
+		result.APIAddr = b.APIAddr
 	}
 	if b.LogLevel != "" {
 		result.LogLevel = b.LogLevel

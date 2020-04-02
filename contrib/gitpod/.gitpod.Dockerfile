@@ -23,6 +23,6 @@ RUN wget -q -O \
     chmod +x "/usr/bin/gitt"
 RUN gitt --init || true;
 RUN wget -O ~/vsls-reqs https://aka.ms/vsls-linux-prereq-script && chmod +x ~/vsls-reqs && ~/vsls-reqs
-RUN echo 'export PATH="/workspace/coe817-dare/bin:$PATH"' >>~/.bashrc
+RUN echo 'export PATH="$PATH:/workspace/go/src/github.com/da-moon/coe817-dare/bin"' >>~/.bashrc
 RUN echo 'export GO111MODULE=on' >>~/.bashrc
 CMD ["bash"]

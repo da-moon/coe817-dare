@@ -1,4 +1,4 @@
-package encrypt
+package daemon
 
 import (
 	dare "github.com/da-moon/coe817-dare/dare"
@@ -39,7 +39,7 @@ func Create(coreConf *Config, conf *dare.CoreConfig, logOutput io.Writer) (*Core
 
 // Start ...
 func (a *Core) Start() error {
-	a.logger.Printf("[INFO] encryptor core: starting...")
+	a.logger.Printf("[INFO] dare daemon core: starting...")
 	if len(a.conf.MasterKey) == 0 {
 		return stacktrace.NewError("master key could not be found")
 	}
@@ -50,7 +50,7 @@ func (a *Core) Start() error {
 func (a *Core) Shutdown() error {
 	a.shutdownLock.Lock()
 	defer a.shutdownLock.Unlock()
-	a.logger.Println("[INFO] encryptor core: shutdown complete")
+	a.logger.Println("[INFO] dare daemon core: shutdown complete")
 	a.shutdown = true
 	// close(a.shutdownCh)
 	return nil

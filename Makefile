@@ -9,11 +9,15 @@ include build/makefiles/target/tests/config/config.mk
 include build/makefiles/target/tests/dare/dare.mk
 THIS_FILE := $(firstword $(MAKEFILE_LIST))
 SELF_DIR := $(dir $(THIS_FILE))
-.PHONY: test build clean
-.SILENT: test build clean
+.PHONY: test build clean run
+.SILENT: test build clean run
 build: 
 	- $(call print_running_target)
 	- @$(MAKE) --no-print-directory -f $(THIS_FILE) go-build
+	- $(call print_completed_target)
+run: build
+	- $(call print_running_target)
+	- bin$(PSEP)dare daemon --api-addr=127.0.0.1:8081
 	- $(call print_completed_target)
 
 test:

@@ -110,7 +110,7 @@ build-linux:
 	- $(eval GOOS := linux)
     ifeq ($(DOCKER_ENV),true)
 	for target in $(GO_TARGET); do \
-            $(MAKE) --no-print-directory -f $(THIS_FILE) shell docker_image="${GO_IMAGE}" container_name="go_builder_container" mount_point="/go/src/${GO_PKG}" cmd="rm -rf /go/src/github.com/da-moon/go-packages/bin/$$target/${GOOS}/${VERSION} && \
+            $(MAKE) --no-print-directory -f $(THIS_FILE) shell docker_image="${GO_IMAGE}" container_name="go_builder_container" mount_point="/go/src/${GO_PKG}" cmd="rm -rf /go/src/github.com/da-moon/coe817-dare/bin/$$target/${GOOS}/${VERSION} && \
             GO111MODULE=${MOD} \
             CGO_ENABLED=${CGO} \
             GOARCH=${GO_ARCHITECTURE} \
@@ -148,7 +148,7 @@ build-windows:
 	- $(eval GOOS := windows)
     ifeq ($(DOCKER_ENV),true)
 	for target in $(GO_TARGET); do \
-            $(MAKE) --no-print-directory -f $(THIS_FILE) shell docker_image="${GO_IMAGE}" container_name="go_builder_container" mount_point="/go/src/${GO_PKG}" cmd="rm -rf /go/src/github.com/da-moon/go-packages/bin/$$target/${GOOS}/${VERSION} && \
+            $(MAKE) --no-print-directory -f $(THIS_FILE) shell docker_image="${GO_IMAGE}" container_name="go_builder_container" mount_point="/go/src/${GO_PKG}" cmd="rm -rf /go/src/github.com/da-moon/coe817-dare/bin/$$target/${GOOS}/${VERSION} && \
             GO111MODULE=${MOD} \
             CGO_ENABLED=${CGO} \
             GOARCH=${GO_ARCHITECTURE} \
@@ -186,7 +186,7 @@ build-mac-os:
 	- $(eval GOOS := darwin)
     ifeq ($(DOCKER_ENV),true)
 	for target in $(GO_TARGET); do \
-            $(MAKE) --no-print-directory -f $(THIS_FILE) shell docker_image="${GO_IMAGE}" container_name="go_builder_container" mount_point="/go/src/${GO_PKG}" cmd="rm -rf /go/src/github.com/da-moon/go-packages/bin/$$target/${GOOS}/${VERSION} && \
+            $(MAKE) --no-print-directory -f $(THIS_FILE) shell docker_image="${GO_IMAGE}" container_name="go_builder_container" mount_point="/go/src/${GO_PKG}" cmd="rm -rf /go/src/github.com/da-moon/coe817-dare/bin/$$target/${GOOS}/${VERSION} && \
             GO111MODULE=${MOD} \
             CGO_ENABLED=${CGO} \
             GOARCH=${GO_ARCHITECTURE} \
