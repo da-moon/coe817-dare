@@ -1,122 +1,37 @@
 package dare_test
 
 import (
+	"bufio"
 	"bytes"
-	"crypto/rand"
-	"crypto/sha256"
-	"encoding/hex"
-	dare "github.com/da-moon/coe817-dare/dare"
-	config "github.com/da-moon/coe817-dare/internal/config"
-	log "github.com/da-moon/coe817-dare/pkg/log"
+	"fmt"
+	"github.com/da-moon/coe817-dare/pkg/dare/encryptor"
 	assert "github.com/stretchr/testify/assert"
-	hkdf "golang.org/x/crypto/hkdf"
 	"io"
 	"testing"
 )
 
-type TestCase struct {
-	datasize    int
-	buffersize  int
-	payloadsize int
-}
+func TestReader(t *testing.T) {
+	testString := []byte("this is a test")
+	expectedEncryptionResult := []byte{193, 169, 253, 213, 94, 44, 240, 65, 32, 194, 251, 86, 65, 75, 104, 6, 205, 132, 60, 67, 10, 68, 228, 244, 232, 29, 54, 141, 97, 141}
+	nonce := [24]byte{58, 230, 79, 44, 187, 45, 107, 226, 245, 53, 169, 118, 218, 116, 235, 95, 132, 127, 166, 200, 203, 141, 251, 51}
+	sharedKey := &[32]byte{199, 156, 103, 110, 157, 5, 107, 139, 94, 138, 53, 214, 74, 100, 211, 97, 106, 48, 11, 179, 200, 19, 244, 108, 138, 167, 49, 163, 156, 176, 66, 64}
+	buf := bytes.NewBuffer(testString)
+	reader := bufio.NewReader(buf)
+	t.Run("NewReader", func(t *testing.T) {
+		enc := encryptor.NewReader(
+			reader,
+			nonce,
+			sharedKey,
+		)
+		result := new(bytes.Buffer)
+		n, err := io.Copy(result, enc)
+		if err != nil {
+			if err != io.EOF {
+				assert.NoError(t, err)
+			}
+		}
+		assert.Equal(t, len(expectedEncryptionResult), int(n))
+		assert.True(t, bytes.Equal(expectedEncryptionResult, result.Bytes()), fmt.Sprintf("want: %v \n got: %v", expectedEncryptionResult, result.Bytes()))
 
-func TestBasicEncrypt(t *testing.T) {
-	log.SetTestLogger(t)
-	tests := []TestCase{
-		{
-			datasize: config.MaxBufferSize / 2,
-		},
-		{
-			datasize: config.MaxBufferSize,
-		},
-		{
-			datasize: config.MaxBufferSize + 1,
-		},
-		{
-			datasize: 2 * config.MaxBufferSize,
-		},
-		{
-			datasize: 2*config.MaxBufferSize + 1,
-		},
-		// {
-		// 	datasize: 2*config.MaxBufferSize + 6,
-		// 	// buffersize:  config.MaxPayloadSize + 1,
-		// 	// payloadsize: config.MaxPayloadSize,
-		// },
-
-		// {
-		// 	datasize: (2 * config.MaxPayloadSize),
-		// 	// buffersize:  config.MaxPayloadSize + 1,
-		// 	// payloadsize: config.MaxPayloadSize,
-		// },
-		// {
-		// 	datasize: 1024*1024 + 1,
-		// 	// buffersize:  config.MaxPayloadSize + 1,
-		// 	// payloadsize: config.MaxPayloadSize,
-		// },
-		// {
-		// 	datasize: 3*config.MaxPayloadSize + 1,
-		// 	// buffersize:  3 * config.MaxPayloadSize,
-		// 	// payloadsize: config.MaxPayloadSize,
-		// },
-		// {
-		// 	datasize: 1024 * 1024,
-		// 	// buffersize:  2 * 1024 * 1024,
-		// 	// payloadsize: config.MaxPayloadSize,
-		// },
-		// {
-		// 	datasize:    (3 * config.MaxPayloadSize) + (config.MaxPayloadSize / 2),
-		// 	buffersize:  config.MaxPayloadSize + 1,
-		// 	payloadsize: config.MaxPayloadSize,
-		// },
-	}
-	for _, test := range tests {
-		t.Run("", func(t *testing.T) {
-			var (
-				nonce [32]byte
-				key   [32]byte
-			)
-			keyString, err := randomHex(26)
-			assert.NoError(t, err)
-			masterkey, err := hex.DecodeString(keyString)
-			assert.NoError(t, err, "Cannot decode hex key")
-			_, err = io.ReadFull(rand.Reader, nonce[:])
-			assert.NoError(t, err, "failed to generate random data for nonce")
-			// driving master key ...
-			kdf := hkdf.New(sha256.New, masterkey, nonce[:], nil)
-			_, err = io.ReadFull(kdf, key[:])
-			assert.NoError(t, err, "could not drive an encryption key. masterkey=%v nonce=%v", masterkey, nonce[:])
-			data := make([]byte, test.datasize)
-			_, err = io.ReadFull(rand.Reader, data)
-			assert.NoError(t, err, "could not generate random data for encryption")
-			output := bytes.NewBuffer(nil)
-			_, err = dare.Encrypt(
-				output,
-				bytes.NewReader(data),
-				key[:],
-			)
-			assert.NoError(t, err, "could not encrypt data")
-
-			decrypted := bytes.NewBuffer(nil)
-			n, err := dare.Decrypt(
-				decrypted,
-				output,
-				key[:],
-			)
-			assert.NoError(t, err)
-			assert.Equal(t, int64(test.datasize), n, "decrypt expected read=%v actual read=%v", int64(test.datasize), n)
-			assert.True(t, bytes.Equal(data, decrypted.Bytes()))
-			// if !bytes.Equal(data, decrypted.Bytes()) {
-			// 	t.Errorf("Failed to encrypt and decrypt data")
-			// }
-		})
-	}
-}
-
-func randomHex(n int) (string, error) {
-	bytes := make([]byte, n)
-	if _, err := rand.Read(bytes); err != nil {
-		return "", err
-	}
-	return hex.EncodeToString(bytes), nil
+	})
 }
