@@ -6,6 +6,9 @@ import (
 	router "github.com/da-moon/coe817-dare/pkg/http/router"
 	view "github.com/da-moon/coe817-dare/pkg/view"
 	gorillaHandlers "github.com/gorilla/handlers"
+	hclog "github.com/hashicorp/go-hclog"
+	"strings"
+
 	"io"
 	"log"
 	"net"
@@ -19,8 +22,8 @@ import (
 type API struct {
 	sync.Mutex
 	sync.Once
-	core *Core
-
+	core      *Core
+	config    *Config
 	listener  net.Listener
 	logger    *log.Logger
 	logWriter *view.LogWriter
@@ -32,6 +35,7 @@ type API struct {
 
 // NewAPIEngine ...
 func NewAPIEngine(
+	config *Config,
 	core *Core,
 	listener net.Listener,
 	logOutput io.Writer,
@@ -42,6 +46,7 @@ func NewAPIEngine(
 	}
 
 	backend := &API{
+		config:    config,
 		core:      core,
 		listener:  listener,
 		logger:    log.New(logOutput, "", log.LstdFlags),
@@ -62,7 +67,6 @@ func (a *API) Shutdown() {
 	if a.stop {
 		return
 	}
-
 	a.stop = true
 	close(a.stopCh)
 	// @TODO fix this
@@ -76,7 +80,12 @@ func (a *API) Shutdown() {
 func (a *API) startAPI() {
 	service := new(Service)
 	service.logger = a.logger
-
+	service.pluginLogger = hclog.New(&hclog.LoggerOptions{
+		Level:  strToHCLogLevel(a.config.LogLevel),
+		Output: a.logger.Writer(),
+	})
+	service.encryptor = a.core.conf.EncryptorPath
+	service.decryptor = a.core.conf.DecryptorPath
 	baseRouter := router.GenerateRPC2Routes([]router.JSON2{
 		{
 			Namespace: "",
@@ -100,4 +109,45 @@ func (a *API) startAPI() {
 		a.logger.Printf("[ERR] agent.api: start failed: %v", err)
 	}
 
+}
+func strToHCLogLevel(input string) hclog.Level {
+	input = strings.ToUpper(input)
+	var result hclog.Level
+	switch input {
+	case "TRACE":
+		{
+			result = hclog.Trace
+			break
+		}
+	case "DEBUG":
+		{
+			result = hclog.Debug
+			break
+
+		}
+	case "INFO":
+		{
+			result = hclog.Info
+			break
+
+		}
+	case "WARN":
+		{
+			result = hclog.Warn
+			break
+
+		}
+	case "ERROR":
+		{
+			result = hclog.Error
+			break
+
+		}
+	default:
+		{
+			result = hclog.NoLevel
+			break
+		}
+	}
+	return result
 }

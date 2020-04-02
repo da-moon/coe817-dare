@@ -24,7 +24,7 @@ func EncryptorPathFlag(f *flag.FlagSet) *string {
 		if err != nil {
 			panic(err)
 		}
-		result = filepath.Join(path, "encryptor")
+		result = filepath.Join(path, "bin/encryptor-plugin")
 	}
 	return f.String("encryptor-path", result,
 		"encryptor plugin path.")
@@ -38,7 +38,7 @@ func DecryptorPathFlag(f *flag.FlagSet) *string {
 		if err != nil {
 			panic(err)
 		}
-		result = filepath.Join(path, "decryptor")
+		result = filepath.Join(path, "bin/decryptor-plugin")
 	}
 	return f.String("decryptor-path", result,
 		"decryptor plugin path.")

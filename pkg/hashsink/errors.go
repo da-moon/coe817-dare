@@ -5,6 +5,7 @@ import (
 )
 
 var errNestedReader = stacktrace.NewError("Nesting of Reader detected, not allowed")
+var errNestedWriter = stacktrace.NewError("Nesting of Writer detected, not allowed")
 
 // SHA256Mismatch ...
 type SHA256Mismatch struct {

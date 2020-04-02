@@ -28,6 +28,11 @@ func Create(coreConf *Config, conf *dare.CoreConfig, logOutput io.Writer) (*Core
 	conf.DevelopmentMode = coreConf.DevelopmentMode
 	conf.MasterKey = coreConf.MasterKey
 	conf.Protocol = uint8(coreConf.Protocol)
+	// todo remove this ... it may be very useless
+	conf.EncryptorPath = coreConf.EncryptorPath
+	conf.DecryptorPath = coreConf.DecryptorPath
+	conf.APIAddr = coreConf.APIAddr
+	conf.APIPassword = coreConf.APIPassword
 	conf.Init()
 	core := &Core{
 		conf:       conf,

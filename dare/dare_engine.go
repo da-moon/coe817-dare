@@ -5,6 +5,7 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/hex"
+	dareCore "github.com/da-moon/coe817-dare"
 	hkdf "golang.org/x/crypto/hkdf"
 	"io"
 	"log"
@@ -138,7 +139,7 @@ func (s *DareEngine) Encrypt(source string, destination string) error {
 		err = stacktrace.Propagate(err, "Could not create empty file at (%s) ", destination)
 		return err
 	}
-	_, err = Encrypt(
+	_, err = dareCore.Encrypt(
 		dstFile,
 		srcFile,
 		s.key[:],
@@ -183,7 +184,7 @@ func (s *DareEngine) Decrypt(source string, destination string) error {
 		err = stacktrace.Propagate(err, "Could not create empty file at (%s) ", destination)
 		return err
 	}
-	_, err = Encrypt(
+	_, err = dareCore.Decrypt(
 		dstFile,
 		srcFile,
 		s.key[:],

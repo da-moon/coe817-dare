@@ -13,17 +13,16 @@ import (
 // Writer ...
 type Writer struct {
 	writer     io.Writer
-	size       int64
-	actualSize int64
-
-	md5sum, sha256sum   []byte
-	md5Hash, sha256Hash hash.Hash
+	md5sum     []byte
+	sha256sum  []byte
+	md5Hash    hash.Hash
+	sha256Hash hash.Hash
 }
 
-// New ...
-func New(writer io.Writer, size int64, md5Hex, sha256Hex string, actualSize int64) (*Writer, error) {
+// NewWriter ...
+func NewWriter(writer io.Writer, md5Hex, sha256Hex string) (*Writer, error) {
 	if _, ok := writer.(*Writer); ok {
-		return nil, errNestedReader
+		return nil, errNestedWriter
 	}
 
 	sha256sum, err := hex.DecodeString(sha256Hex)
@@ -44,22 +43,18 @@ func New(writer io.Writer, size int64, md5Hex, sha256Hex string, actualSize int6
 	if len(md5sum) != 0 {
 		md5Hash = md5.New()
 	}
-	if size >= 0 {
-		writer = io.LimitReader(writer, size)
-	}
+
 	return &Writer{
 		md5sum:     md5sum,
 		sha256sum:  sha256sum,
 		writer:     writer,
-		size:       size,
 		md5Hash:    md5Hash,
 		sha256Hash: sha256Hash,
-		actualSize: actualSize,
 	}, nil
 }
 
 // Read ...
-func (w *Writer) Read(p []byte) (n int, err error) {
+func (w *Writer) Write(p []byte) (n int, err error) {
 	n, err = w.writer.Write(p)
 	if n > 0 {
 		if w.md5Hash != nil {
@@ -78,12 +73,6 @@ func (w *Writer) Read(p []byte) (n int, err error) {
 
 	return
 }
-
-// Size ...
-func (w *Writer) Size() int64 { return w.size }
-
-// ActualSize ...
-func (w *Writer) ActualSize() int64 { return w.actualSize }
 
 // MD5 ...
 func (w *Writer) MD5() []byte {

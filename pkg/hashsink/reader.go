@@ -21,7 +21,7 @@ type Reader struct {
 }
 
 // New ...
-func New(reader io.Reader, size int64, md5Hex, sha256Hex string, actualSize int64) (*Reader, error) {
+func NewReader(reader io.Reader, size int64, md5Hex, sha256Hex string, actualSize int64) (*Reader, error) {
 	if _, ok := reader.(*Reader); ok {
 		return nil, errNestedReader
 	}

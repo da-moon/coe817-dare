@@ -29,6 +29,7 @@ func (c *Command) startAPIEngine(
 	apiListener := &tcpKeepAliveListener{l.(*net.TCPListener)}
 
 	ipc := NewAPIEngine(
+		config,
 		core,
 		apiListener,
 		logOutput,
