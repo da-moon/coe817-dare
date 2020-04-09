@@ -172,7 +172,6 @@ Options:
                            as configuration in this directory in alphabetical
                            order.
   -log-level=info          Log level used in the encryption process.
-  -master-key=foo          Master Key for encrypting data.
   -encryptor-path=foo      Path encryptor plugin is located at.
   -decryptor-path=foo      Path decryptor plugin is located at.
 `

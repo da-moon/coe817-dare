@@ -22,7 +22,6 @@ type dirEnts []os.FileInfo
 
 // Config ...
 type Config struct {
-	MasterKey       string `mapstructure:"master_key"`
 	EncryptorPath   string `mapstructure:"encryptor_path"`
 	DecryptorPath   string `mapstructure:"decryptor_path"`
 	APIAddr         string `mapstructure:"api_addr"`
@@ -65,7 +64,6 @@ func (c *Command) readConfig() *Config {
 		"json file to read config from")
 	cmdFlags.Var((*flags.AppendSliceValue)(&configFiles), "config-dir",
 		"directory of json files to read")
-	masterKey := flags.MasterKeyFlag(cmdFlags)
 	logLevl := flags.LogLevelFlag(cmdFlags)
 	encryptorPath := flags.EncryptorPathFlag(cmdFlags)
 	decryptorPath := flags.DecryptorPathFlag(cmdFlags)
@@ -77,7 +75,6 @@ func (c *Command) readConfig() *Config {
 	}
 	cmdConfig.DevelopmentMode = *dev
 	cmdConfig.LogLevel = *logLevl
-	cmdConfig.MasterKey = *masterKey
 	cmdConfig.EncryptorPath = *encryptorPath
 	cmdConfig.DecryptorPath = *decryptorPath
 	cmdConfig.APIAddr = *apiAddr
@@ -105,11 +102,6 @@ func (c *Command) readConfig() *Config {
 		config.LogLevel = "INFO"
 	}
 	return config
-}
-
-// EncryptBytes returns the encryption key configured.
-func (c *Config) EncryptBytes() ([]byte, error) {
-	return base64.StdEncoding.DecodeString(c.MasterKey)
 }
 
 // DecodeConfig ...
@@ -151,9 +143,6 @@ func containsKey(keys []string, key string) bool {
 func MergeConfig(a, b *Config) *Config {
 	result := *a
 
-	if b.MasterKey != "" {
-		result.MasterKey = b.MasterKey
-	}
 	if b.EncryptorPath != "" {
 		result.EncryptorPath = b.EncryptorPath
 	}

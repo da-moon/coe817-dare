@@ -9,43 +9,12 @@ import (
 	"testing"
 )
 
-func TestConfigEncryptBytes(t *testing.T) {
-	// Test with some input
-	src := []byte("abc")
-	c := &Config{
-		MasterKey: base64.StdEncoding.EncodeToString(src),
-	}
-
-	result, err := c.EncryptBytes()
-	if err != nil {
-		t.Fatalf("err: %v", err)
-	}
-
-	if !bytes.Equal(src, result) {
-		t.Fatalf("bad: %#v", result)
-	}
-
-	// Test with no input
-	c = &Config{}
-	result, err = c.EncryptBytes()
-	if err != nil {
-		t.Fatalf("err: %v", err)
-	}
-
-	if len(result) > 0 {
-		t.Fatalf("bad: %#v", result)
-	}
-}
 func TestDecodeConfig(t *testing.T) {
 	// Without a protocol
 	input := `{"master_key": "foo"}`
 	config, err := DecodeConfig(bytes.NewReader([]byte(input)))
 	if err != nil {
 		t.Fatalf("err: %v", err)
-	}
-
-	if config.MasterKey != "foo" {
-		t.Fatalf("bad: %#v", config)
 	}
 
 	if config.Protocol != 0 {
@@ -56,10 +25,6 @@ func TestDecodeConfig(t *testing.T) {
 	config, err = DecodeConfig(bytes.NewReader([]byte(input)))
 	if err != nil {
 		t.Fatalf("err: %v", err)
-	}
-
-	if config.MasterKey != "foo" {
-		t.Fatalf("bad: %#v", config)
 	}
 
 	if config.Protocol != 7 {
@@ -78,13 +43,11 @@ func TestDecodeConfig_unknownDirective(t *testing.T) {
 
 func TestMergeConfig(t *testing.T) {
 	a := &Config{
-		MasterKey: "foo",
-		Protocol:  7,
+		Protocol: 7,
 	}
 
 	b := &Config{
 		Protocol:        -1,
-		MasterKey:       "foo",
 		DevelopmentMode: true,
 	}
 
@@ -92,10 +55,6 @@ func TestMergeConfig(t *testing.T) {
 
 	if c.Protocol != 7 {
 		t.Fatalf("bad: %#v", c)
-	}
-
-	if c.MasterKey != "foo" {
-		t.Fatalf("bad: %#v", c.MasterKey)
 	}
 
 	if !c.DevelopmentMode {
@@ -124,9 +83,6 @@ func TestReadConfigPaths_file(t *testing.T) {
 		t.Fatalf("err: %v", err)
 	}
 
-	if config.MasterKey != "bar" {
-		t.Fatalf("bad: %#v", config)
-	}
 }
 
 func TestReadConfigPaths_dir(t *testing.T) {
@@ -160,7 +116,4 @@ func TestReadConfigPaths_dir(t *testing.T) {
 		t.Fatalf("err: %v", err)
 	}
 
-	if config.MasterKey != "baz" {
-		t.Fatalf("bad: %#v", config)
-	}
 }

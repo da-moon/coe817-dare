@@ -26,7 +26,6 @@ func Create(coreConf *Config, conf *daemon.CoreConfig, logOutput io.Writer) (*Co
 	}
 	conf.LogOutput = logOutput
 	conf.DevelopmentMode = coreConf.DevelopmentMode
-	conf.MasterKey = coreConf.MasterKey
 	conf.Protocol = uint8(coreConf.Protocol)
 	// todo remove this ... it may be very useless
 	conf.EncryptorPath = coreConf.EncryptorPath
@@ -45,9 +44,6 @@ func Create(coreConf *Config, conf *daemon.CoreConfig, logOutput io.Writer) (*Co
 // Start ...
 func (a *Core) Start() error {
 	a.logger.Printf("[INFO] dare daemon core: starting...")
-	if len(a.conf.MasterKey) == 0 {
-		return stacktrace.NewError("master key could not be found")
-	}
 	return nil
 }
 

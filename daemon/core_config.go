@@ -36,7 +36,6 @@ type CoreConfig struct {
 	LogOutput       io.Writer
 	Protocol        uint8
 	Logger          *log.Logger
-	MasterKey       string
 	EncryptorPath   string
 	DecryptorPath   string
 	APIAddr         string
@@ -48,12 +47,6 @@ type CoreConfig struct {
 // Init ...
 func (c *CoreConfig) Init() {
 	c.Do(func() {
-		if len(c.MasterKey) == 0 {
-			c.MasterKey = os.Getenv("DARE_MASTER_KEY")
-			if len(c.MasterKey) == 0 {
-				c.MasterKey = "b6c4bba7a385aef779965cb0b7d66316ab091704042606797871"
-			}
-		}
 		logOutput := c.LogOutput
 		if logOutput == nil {
 			logOutput = os.Stderr
