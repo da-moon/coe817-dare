@@ -7,7 +7,7 @@ import (
 	"flag"
 	"fmt"
 	flags "github.com/da-moon/coe817-dare/cmd/dare/flags"
-	dare "github.com/da-moon/coe817-dare/dare"
+	daemon "github.com/da-moon/coe817-dare/daemon"
 	mapstructure "github.com/mitchellh/mapstructure"
 	"io"
 	"os"
@@ -47,7 +47,7 @@ func DefaultConfig() *Config {
 	return &Config{
 		LogLevel:        "INFO",
 		DevelopmentMode: false,
-		Protocol:        dare.CoreVersionMax,
+		Protocol:        daemon.CoreVersionMax,
 		APIAddr:         "127.0.0.1:8080",
 		APIPassword:     base64.StdEncoding.EncodeToString(bytes),
 		EncryptorPath:   filepath.Join(path, "encryptor"),

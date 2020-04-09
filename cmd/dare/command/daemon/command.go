@@ -10,7 +10,7 @@ import (
 	"syscall"
 	"time"
 
-	dare "github.com/da-moon/coe817-dare/dare"
+	daemon "github.com/da-moon/coe817-dare/daemon"
 	view "github.com/da-moon/coe817-dare/pkg/view"
 	logutils "github.com/hashicorp/logutils"
 	cli "github.com/mitchellh/cli"
@@ -180,7 +180,7 @@ Options:
 }
 
 func (c *Command) setupCore(config *Config, logOutput io.Writer) *Core {
-	coreConfig := dare.DefaultCoreConfig()
+	coreConfig := daemon.DefaultCoreConfig()
 	coreConfig.Protocol = uint8(config.Protocol)
 	c.Ui.Output("Creating dare daemon core...")
 	core, err := Create(config, coreConfig, logOutput)

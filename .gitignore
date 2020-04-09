@@ -194,3 +194,4 @@ bin
 data
 tmp
 web/vue.js/dist
+server.log

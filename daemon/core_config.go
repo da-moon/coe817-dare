@@ -1,4 +1,4 @@
-package dare
+package daemon
 
 import (
 	"io"

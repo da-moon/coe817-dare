@@ -3,19 +3,58 @@ ifeq ($(OS),Windows_NT)
 else
     GO_PATH = ${GOPATH}
 endif
+fatal=fatal: No names found, cannot describe anything.
 THIS_FILE := $(lastword $(MAKEFILE_LIST))
 SELF_DIR := $(dir $(THIS_FILE))
 GO_TARGET = $(notdir $(patsubst %/,%,$(dir $(wildcard ./cmd/*/.))))
+GO_BUILD_WINDOWS_TARGETS = $(GO_TARGET:%=go-target-windows-%)
+GO_BUILD_DARWIN_TARGETS = $(GO_TARGET:%=go-target-darwin-%)
+GO_BUILD_LINUX_TARGETS = $(GO_TARGET:%=go-target-linux-%)
+GO_BUILD_TARGETS = $(GO_TARGET:%=go-target-%)
+GO_BUILD_OS_TARGETS = $(GO_BUILD_WINDOWS_TARGETS) $(GO_BUILD_DARWIN_TARGETS) $(GO_BUILD_LINUX_TARGETS)
+.PHONY: $(GO_BUILD_TARGETS) $(GO_BUILD_OS_TARGETS)
+.SILENT: $(GO_BUILD_TARGETS) $(GO_BUILD_OS_TARGETS) 
 CGO=0
 GO_ARCHITECTURE=amd64
 GO_IMAGE=golang:buster
 MOD=on
 GO_PKG=github.com/da-moon/coe817-dare
-.PHONY: go-build full-build build-mac-os build-linux build-windows go-clean go-dependancy go-print
-.SILENT: go-build full-build build-mac-os build-linux build-windows go-clean go-dependancy go-print
+
+
+.PHONY: go-build full-build build-darwin build-linux build-windows go-clean go-dependancy go-print 
+.SILENT: go-build full-build build-darwin build-linux build-windows go-clean go-dependancy go-print
 go-print:
 	- $(info some random stuff)
-	- $(info $(GO_PKG))
+	# - @$(MAKE) --no-print-directory -f $(THIS_FILE) $(GO_BUILD_LINUX_TARGETS)
+	- $(info ${GO_PKG})
+	- $(info ${VERSION})
+
+go-build: go-clean go-dependancy
+	- $(call print_running_target)
+	- @$(MAKE) --no-print-directory -f $(THIS_FILE) $(GO_BUILD_TARGETS)
+	- $(call print_completed_target)
+full-build: go-clean go-dependancy
+	- $(CLEAR)
+	- $(call print_running_target)
+	- @$(MAKE) --no-print-directory -f $(THIS_FILE) build-linux
+	- @$(MAKE) --no-print-directory -f $(THIS_FILE) build-windows
+	- @$(MAKE) --no-print-directory -f $(THIS_FILE) build-darwin
+	- $(call print_completed_target)
+
+build-linux:  
+	- $(call print_running_target)
+	- @$(MAKE) --no-print-directory -f $(THIS_FILE) $(GO_BUILD_LINUX_TARGETS)
+	- $(call print_completed_target)
+
+build-windows:
+	- $(call print_running_target)
+	- @$(MAKE) --no-print-directory -f $(THIS_FILE) $(GO_BUILD_WINDOWS_TARGETS)
+	- $(call print_completed_target)
+
+build-mac-os:
+	- $(call print_running_target)
+	- @$(MAKE) --no-print-directory -f $(THIS_FILE) $(GO_BUILD_DARWIN_TARGETS)
+	- $(call print_completed_target)
 
 go-dependancy:
 	- $(call print_running_target)
@@ -60,164 +99,71 @@ ifeq (${MOD},off)
 endif
     endif
 	- $(call print_completed_target)
-go-build: go-clean go-dependancy
-	- $(call print_running_target)
-    ifeq ($(DOCKER_ENV),true)
 
-	for target in $(GO_TARGET); do \
-            $(MAKE) --no-print-directory -f $(THIS_FILE) shell docker_image="${GO_IMAGE}" container_name="go_builder_container" mount_point="/go/src/${GO_PKG}" cmd=" \
-            GO111MODULE=${MOD} \
-            CGO_ENABLED=${CGO} \
-            GOARCH=${GO_ARCHITECTURE} \
-            GOOS=${GOOS} \
-            go build -a -installsuffix cgo -ldflags \
-            '-X ${GO_PKG}/version.Version=${VERSION} \
-			-X ${GO_PKG}/version.Revision=${REVISION} \
-			-X ${GO_PKG}/version.Branch=${BRANCH} \
-			-X ${GO_PKG}/version.BuildUser=${BUILDUSER} \
-			-X ${GO_PKG}/version.BuildDate=${BUILDTIME}' \
-			-o .$(PSEP)bin$(PSEP)$$target .$(PSEP)cmd$(PSEP)$$target"; \
-	done
+
+
+$(GO_BUILD_TARGETS): 
+	- $(call print_running_target)
+	- $(eval name=$(@:go-target-%=%))
+	- $(eval command= GO111MODULE=${MOD})
+	- $(eval command= ${command} CGO_ENABLED=${CGO})
+	- $(eval command= ${command} GOARCH=${GO_ARCHITECTURE})
+	- $(eval command= ${command} go build -a -installsuffix cgo)
+	- $(eval command= ${command} -ldflags '-X ${GO_PKG}/version.Branch=${BRANCH}' )
+	- $(eval command= ${command} -ldflags '-X ${GO_PKG}/version.BuildUser=${BUILDUSER}' )
+	- $(eval command= ${command} -ldflags '-X ${GO_PKG}/version.BuildDate=${BUILDTIME}' )
+	- $(eval command= ${command} -ldflags '-X ${GO_PKG}/version.Revision=${REVISION}' )
+ifneq (${VERSION}, )
+	- $(eval command= ${command} -ldflags '-X ${GO_PKG}/version.Version=${VERSION}' )
+endif
+	- for pid in $(shell ps  | grep "${name}" | awk '{print $$1}'); do kill -9 "$$pid"; done
+	- $(eval command= ${command} -o .$(PSEP)bin$(PSEP)${name} .$(PSEP)cmd$(PSEP)${name} )
+    ifeq ($(DOCKER_ENV),true)
+	- @$(MAKE) --no-print-directory \
+	 -f $(THIS_FILE) shell \
+	 docker_image="${GO_IMAGE}" \
+	 container_name="go_builder_container" \
+	 mount_point="/go/src/${GO_PKG}" \
+	 cmd="${command}"
     endif
     ifeq ($(DOCKER_ENV),false)
-	for target in $(GO_TARGET); do \
-            $(RM) .$(PSEP)bin$(PSEP)$$target$(PSEP)${GOOS}$(PSEP)${VERSION}; \
-			$(MAKE) --no-print-directory -f $(THIS_FILE) shell cmd="CGO_ENABLED=${CGO} \
-            GO111MODULE=$(MOD) \
-            GOARCH=${GO_ARCHITECTURE} \
-            GOOS=${GOOS} \
-            go build -a -installsuffix cgo -ldflags \
-            '-X ${GO_PKG}/version.Version=${VERSION} \
-			-X ${GO_PKG}/version.Revision=${REVISION} \
-			-X ${GO_PKG}/version.Branch=${BRANCH} \
-			-X ${GO_PKG}/version.BuildUser=${BUILDUSER} \
-			-X ${GO_PKG}/version.BuildDate=${BUILDTIME}' \
-			-o .$(PSEP)bin$(PSEP)$$target .$(PSEP)cmd$(PSEP)$$target"; \
-	done
+	- @$(MAKE) --no-print-directory \
+	 -f $(THIS_FILE) shell cmd="${command}"
     endif
 	- $(call print_completed_target)
 
-full-build: go-clean go-dependancy
-	- $(CLEAR)
+.PHONY: $(GO_BUILD_OS_TARGETS)
+.SILENT: $(GO_BUILD_OS_TARGETS)
+$(GO_BUILD_OS_TARGETS): 
 	- $(call print_running_target)
-	- @$(MAKE) --no-print-directory -f $(THIS_FILE) build-linux
-	- @$(MAKE) --no-print-directory -f $(THIS_FILE) build-windows
-	- @$(MAKE) --no-print-directory -f $(THIS_FILE) build-mac-os
-	- $(call print_completed_target)
-
-build-linux:  
-	- $(call print_running_target)
-	- $(eval GOOS := linux)
+	- $(eval trimmed=$(@:go-target-%=%))
+	- $(eval GOOS := $(firstword $(subst -, ,$(trimmed))))
+	- $(info $(GOOS) )
+	- $(eval name=$(@:go-target-$(GOOS)-%=%))
+	- $(eval command= GO111MODULE=${MOD})
+	- $(eval command= ${command} CGO_ENABLED=${CGO})
+	- $(eval command= ${command} GOARCH=${GO_ARCHITECTURE})
+	- $(eval command= ${command} GOARCH=${GO_ARCHITECTURE})
+	- $(eval command= ${command} GOOS=${GOOS})
+	- $(eval command= ${command} go build -a -installsuffix cgo \
+			-o $(PWD)$(PSEP)bin$(PSEP)$(GOOS)$(PSEP)${name} $(PWD)$(PSEP)cmd$(PSEP)${name} \
+		)
+	- for pid in $(shell ps  | grep "${name}" | awk '{print $$1}'); do kill -9 "$$pid"; done
     ifeq ($(DOCKER_ENV),true)
-	for target in $(GO_TARGET); do \
-            $(MAKE) --no-print-directory -f $(THIS_FILE) shell docker_image="${GO_IMAGE}" container_name="go_builder_container" mount_point="/go/src/${GO_PKG}" cmd="rm -rf /go/src/github.com/da-moon/coe817-dare/bin/$$target/${GOOS}/${VERSION} && \
-            GO111MODULE=${MOD} \
-            CGO_ENABLED=${CGO} \
-            GOARCH=${GO_ARCHITECTURE} \
-            GOOS=${GOOS} \
-            go build -a -installsuffix cgo -ldflags \
-            '-X ${GO_PKG}/version.Version=${VERSION} \
-			-X ${GO_PKG}/version.Revision=${REVISION} \
-			-X ${GO_PKG}/version.Branch=${BRANCH} \
-			-X ${GO_PKG}/version.BuildUser=${BUILDUSER} \
-			-X ${GO_PKG}/version.BuildDate=${BUILDTIME}' \
-			-o .$(PSEP)bin$(PSEP)$$target$(PSEP)${GOOS}$(PSEP)${VERSION}$(PSEP)$$target .$(PSEP)cmd$(PSEP)$$target"; \
-	done
-
+	- @$(MAKE) --no-print-directory \
+	 -f $(THIS_FILE) shell \
+	 docker_image="${GO_IMAGE}" \
+	 container_name="go_builder_container" \
+	 mount_point="/go/src/${GO_PKG}" \
+	 cmd="${command}"
     endif
     ifeq ($(DOCKER_ENV),false)
-	for target in $(GO_TARGET); do \
-            $(RM) .$(PSEP)bin$(PSEP)$$target$(PSEP)${GOOS}$(PSEP)${VERSION}; \
-			$(MAKE) --no-print-directory -f $(THIS_FILE) shell cmd="CGO_ENABLED=${CGO} \
-            GO111MODULE=$(MOD) \
-            GOARCH=${GO_ARCHITECTURE} \
-            GOOS=${GOOS} \
-            go build -a -installsuffix cgo -ldflags \
-            '-X ${GO_PKG}/version.Version=${VERSION} \
-			-X ${GO_PKG}/version.Revision=${REVISION} \
-			-X ${GO_PKG}/version.Branch=${BRANCH} \
-			-X ${GO_PKG}/version.BuildUser=${BUILDUSER} \
-			-X ${GO_PKG}/version.BuildDate=${BUILDTIME}' \
-			-o .$(PSEP)bin$(PSEP)$$target$(PSEP)${GOOS}$(PSEP)${VERSION}$(PSEP)$$target .$(PSEP)cmd$(PSEP)$$target"; \
-	done
+	- @$(MAKE) --no-print-directory \
+	 -f $(THIS_FILE) shell cmd="${command}"
     endif
 	- $(call print_completed_target)
+	
 
-build-windows:
-	- $(call print_running_target)
-	- $(eval GOOS := windows)
-    ifeq ($(DOCKER_ENV),true)
-	for target in $(GO_TARGET); do \
-            $(MAKE) --no-print-directory -f $(THIS_FILE) shell docker_image="${GO_IMAGE}" container_name="go_builder_container" mount_point="/go/src/${GO_PKG}" cmd="rm -rf /go/src/github.com/da-moon/coe817-dare/bin/$$target/${GOOS}/${VERSION} && \
-            GO111MODULE=${MOD} \
-            CGO_ENABLED=${CGO} \
-            GOARCH=${GO_ARCHITECTURE} \
-            GOOS=${GOOS} \
-            go build -a -installsuffix cgo -ldflags \
-            '-X ${GO_PKG}/version.Version=${VERSION} \
-			-X ${GO_PKG}/version.Revision=${REVISION} \
-			-X ${GO_PKG}/version.Branch=${BRANCH} \
-			-X ${GO_PKG}/version.BuildUser=${BUILDUSER} \
-			-X ${GO_PKG}/version.BuildDate=${BUILDTIME}' \
-			-o .$(PSEP)bin$(PSEP)$$target$(PSEP)${GOOS}$(PSEP)${VERSION}$(PSEP)$$target.exe .$(PSEP)cmd$(PSEP)$$target"; \
-	done
-
-    endif
-    ifeq ($(DOCKER_ENV),false)
-	for target in $(GO_TARGET); do \
-            $(RM) .$(PSEP)bin$(PSEP)$$target$(PSEP)${GOOS}$(PSEP)${VERSION}; \
-			$(MAKE) --no-print-directory -f $(THIS_FILE) shell cmd="CGO_ENABLED=${CGO} \
-            GO111MODULE=$(MOD) \
-            GOARCH=${GO_ARCHITECTURE} \
-            GOOS=${GOOS} \
-            go build -a -installsuffix cgo -ldflags \
-            '-X ${GO_PKG}/version.Version=${VERSION} \
-			-X ${GO_PKG}/version.Revision=${REVISION} \
-			-X ${GO_PKG}/version.Branch=${BRANCH} \
-			-X ${GO_PKG}/version.BuildUser=${BUILDUSER} \
-			-X ${GO_PKG}/version.BuildDate=${BUILDTIME}' \
-			-o .$(PSEP)bin$(PSEP)$$target$(PSEP)${GOOS}$(PSEP)${VERSION}$(PSEP)$$target .$(PSEP)cmd$(PSEP)$$target"; \
-	done
-    endif
-	- $(call print_completed_target)
-
-build-mac-os:
-	- $(call print_running_target)
-	- $(eval GOOS := darwin)
-    ifeq ($(DOCKER_ENV),true)
-	for target in $(GO_TARGET); do \
-            $(MAKE) --no-print-directory -f $(THIS_FILE) shell docker_image="${GO_IMAGE}" container_name="go_builder_container" mount_point="/go/src/${GO_PKG}" cmd="rm -rf /go/src/github.com/da-moon/coe817-dare/bin/$$target/${GOOS}/${VERSION} && \
-            GO111MODULE=${MOD} \
-            CGO_ENABLED=${CGO} \
-            GOARCH=${GO_ARCHITECTURE} \
-            GOOS=${GOOS} \
-            go build -a -installsuffix cgo -ldflags \
-            '-X ${GO_PKG}/version.Version=${VERSION} \
-			-X ${GO_PKG}/version.Revision=${REVISION} \
-			-X ${GO_PKG}/version.Branch=${BRANCH} \
-			-X ${GO_PKG}/version.BuildUser=${BUILDUSER} \
-			-X ${GO_PKG}/version.BuildDate=${BUILDTIME}' \
-			-o .$(PSEP)bin$(PSEP)$$target$(PSEP)${GOOS}$(PSEP)${VERSION}$(PSEP)$$target .$(PSEP)cmd$(PSEP)$$target"; \
-	done
-
-    endif
-    ifeq ($(DOCKER_ENV),false)
-	for target in $(GO_TARGET); do \
-            $(RM) .$(PSEP)bin$(PSEP)$$target$(PSEP)${GOOS}$(PSEP)${VERSION}; \
-			$(MAKE) --no-print-directory -f $(THIS_FILE) shell cmd="CGO_ENABLED=${CGO} \
-            GO111MODULE=$(MOD) \
-            GOARCH=${GO_ARCHITECTURE} \
-            GOOS=${GOOS} \
-            go build -a -installsuffix cgo -ldflags \
-            '-X ${GO_PKG}/version.Version=${VERSION} \
-			-X ${GO_PKG}/version.Revision=${REVISION} \
-			-X ${GO_PKG}/version.Branch=${BRANCH} \
-			-X ${GO_PKG}/version.BuildUser=${BUILDUSER} \
-			-X ${GO_PKG}/version.BuildDate=${BUILDTIME}' \
-			-o .$(PSEP)bin$(PSEP)$$target$(PSEP)${GOOS}$(PSEP)${VERSION}$(PSEP)$$target .$(PSEP)cmd$(PSEP)$$target"; \
-	done
-    endif
-	- $(call print_completed_target)
 
 go-clean:
 	- $(CLEAR)

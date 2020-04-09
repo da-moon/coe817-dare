@@ -67,7 +67,7 @@ func LogLevelFlag(f *flag.FlagSet) *string {
 	if result == "" {
 		result = "INFO"
 	}
-	return f.String("log", result,
+	return f.String("log-level", result,
 		"flag used to indicate log level")
 }
 

@@ -1,7 +1,7 @@
 package daemon
 
 import (
-	dare "github.com/da-moon/coe817-dare/dare"
+	daemon "github.com/da-moon/coe817-dare/daemon"
 	stacktrace "github.com/palantir/stacktrace"
 	"io"
 	"log"
@@ -11,7 +11,7 @@ import (
 
 // Core ...
 type Core struct {
-	conf         *dare.CoreConfig
+	conf         *daemon.CoreConfig
 	logger       *log.Logger
 	shutdown     bool
 	shutdownCh   chan struct{}
@@ -19,7 +19,7 @@ type Core struct {
 }
 
 // Create ...
-func Create(coreConf *Config, conf *dare.CoreConfig, logOutput io.Writer) (*Core, error) {
+func Create(coreConf *Config, conf *daemon.CoreConfig, logOutput io.Writer) (*Core, error) {
 
 	if logOutput == nil {
 		logOutput = os.Stderr
