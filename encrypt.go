@@ -1,8 +1,8 @@
 package dare
 
 import (
-	"github.com/da-moon/coe817-dare/pkg/dare/encryptor"
-	"github.com/palantir/stacktrace"
+	encryptor "github.com/da-moon/coe817-dare/pkg/dare/encryptor"
+	stacktrace "github.com/palantir/stacktrace"
 	"io"
 	"os"
 )
