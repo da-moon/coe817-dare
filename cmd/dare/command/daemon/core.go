@@ -2,7 +2,6 @@ package daemon
 
 import (
 	daemon "github.com/da-moon/coe817-dare/daemon"
-	stacktrace "github.com/palantir/stacktrace"
 	"io"
 	"log"
 	"os"

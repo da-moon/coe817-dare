@@ -4,8 +4,6 @@ service Encryptor {
     rpc Encrypt(EncryptRequest) returns (EncryptResponse){
     }
 }
-
-
 message Hash {
     string md5 = 1;
     string sha256 = 2;
@@ -13,11 +11,14 @@ message Hash {
 message EncryptRequest {
     string source = 1;
     string destination = 2;
+    string key = 3;
 }
 
 message EncryptResponse {
     Hash source_hash = 1;
     Hash destination_hash = 2;
+    string random_nonce = 3;
+    string random_key = 4;
 }
 service Decryptor {
 
@@ -27,6 +28,9 @@ service Decryptor {
 message DecryptRequest {
     string source = 1;
     string destination = 2;
+    string nonce = 3;
+    string key = 4;
+
 }
 
 message DecryptResponse {
