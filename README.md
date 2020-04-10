@@ -2,29 +2,19 @@
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io#https://github.com/da-moon/coe817-dare)
 
-#   - $(eval bin_path = $(bin_path)$(PSEP)$(name))
-# 	- $(eval command = GO111MODULE=${MOD})
-# 	- $(eval command = $(command) CGO_ENABLED=${CGO})
-# 	- $(eval command = $(command) GOARCH=${GO_ARCHITECTURE})
-# ifneq ($(GOOS), )
-# 	- $(eval command = $(command) GOOS=${GOOS})
-# endif
-# 	- $(info $(name))
-	# - $(eval command = $(command) go build -a -installsuffix cgo)
-	# - $(eval command = $(command) -o $(bin_path) .$(PSEP)cmd$(PSEP)$(name))
-	# - $(info $(command))
-	# - $(eval command= $(command) go build -a -installsuffix cgo \
-	# 		-o .$(PSEP)bin$(PSEP)$(name) .$(PSEP)cmd$(PSEP)${dir}$(PSEP)$(name) \
-	# 	)
-    # ifeq ($(DOCKER_ENV),true)
-	# - @$(MAKE) --no-print-directory \
-	#  -f $(THIS_FILE) shell \
-	#  docker_image="${GO_IMAGE}" \
-	#  container_name="go_builder_container" \
-	#  mount_point="/go/src/${GO_PKG}" \
-	#  cmd="$(command)"
-    # endif
-    # ifeq ($(DOCKER_ENV),false)
-	# - @$(MAKE) --no-print-directory \
-	#  -f $(THIS_FILE) shell cmd="$(command)"
-    # endif
+```bash
+rm -rf /tmp/go-build* && rm /tmp/plain && rm /tmp/encrypted && make go-build-dare && make run && make demo-encrypt
+```
+
+	# - $(eval src_md5=$(shell md5sum $(ENCRYPT_PATH)))
+	# - $(eval dst_md5=$(shell md5sum $(DECRYPT_PATH)))
+	# - $(eval plain_md5=$(shell md5sum $(PLAIN_PATH)))
+	# - $(eval src_sha=$(shell sha256sum $(ENCRYPT_PATH)))
+	# - $(eval dst_sha=$(shell sha256sum $(DECRYPT_PATH)))
+	# - $(eval plain_sha=$(shell sha256sum $(PLAIN_PATH)))
+	# - $(call print_completed_target,src md5 : $(src_md5))
+	# - $(call print_completed_target,src sha256 : $(src_sha))
+	# - $(call print_completed_target,dst md5 : $(dst_md5))
+	# - $(call print_completed_target,dst sha256 : $(dst_sha))
+	# - $(call print_completed_target,original plaintext md5 : $(plain_md5))
+	# - $(call print_completed_target,original plaintext sha256 : $(plain_sha))

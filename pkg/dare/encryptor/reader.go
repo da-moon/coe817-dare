@@ -65,8 +65,6 @@ func (r *Reader) Read(p []byte) (int, error) {
 		}
 		n += nn
 		r.stateLock.Unlock()
-		fmt.Println("iter done")
-
 	}
 }
 
@@ -81,6 +79,7 @@ func (r *Reader) encrypt(p []byte) error {
 	}
 	// copying first 24 bytes of output as current nonce for nonce chaining
 	copy(r.nonce[:], r.buf.Bytes()[:24])
+	fmt.Printf("[TRACE] encrypt.reader about to io.Copy")
 	return nil
 }
 

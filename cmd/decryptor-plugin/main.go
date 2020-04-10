@@ -1,38 +1,18 @@
 package main
 
 import (
-	model "github.com/da-moon/coe817-dare/model"
+	handler "github.com/da-moon/coe817-dare/cmd/decryptor-plugin/handler"
 	grpc "github.com/da-moon/coe817-dare/plugins/decryptor/grpc"
 	shared "github.com/da-moon/coe817-dare/plugins/shared"
 	plugin "github.com/hashicorp/go-plugin"
 )
-
-// Decrypt - this is the struct that implements engine operations
-type Decrypt struct{}
-
-// Decrypt - Implementation of Decrypt method for go engine
-func (Decrypt) Decrypt(req *model.DecryptRequest) (*model.DecryptResponse, error) {
-	srcHash := &model.Hash{
-		Md5:    "[Decrypt] src md5hash",
-		Sha256: "[Decrypt] src sha256hash",
-	}
-	dstHash := &model.Hash{
-		Md5:    "[Decrypt] dst md5hash",
-		Sha256: "[Decrypt] dst sha256hash",
-	}
-	resp := &model.DecryptResponse{
-		SourceHash:      srcHash,
-		DestinationHash: dstHash,
-	}
-	return resp, nil
-}
 
 // ServeConfig - This is the plugin config thet is used in main function of engine
 func main() {
 	plugin.Serve(&plugin.ServeConfig{
 		HandshakeConfig: shared.HandshakeConfig,
 		Plugins: map[string]plugin.Plugin{
-			"decryptor": &grpc.Plugin{Impl: &Decrypt{}},
+			"decryptor": &grpc.Plugin{Impl: &handler.Decrypt{}},
 		},
 		// A non-nil value here enables gRPC serving for this plugin...
 		GRPCServer: plugin.DefaultGRPCServer,
