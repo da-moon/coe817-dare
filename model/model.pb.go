@@ -24,6 +24,7 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+// Hash ...
 type Hash struct {
 	Md5                  string   `protobuf:"bytes,1,opt,name=md5,proto3" json:"md5,omitempty"`
 	Sha256               string   `protobuf:"bytes,2,opt,name=sha256,proto3" json:"sha256,omitempty"`
@@ -32,30 +33,48 @@ type Hash struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Hash) Reset()         { *m = Hash{} }
+// Reset ...
+func (m *Hash) Reset() { *m = Hash{} }
+
+// String ...
 func (m *Hash) String() string { return proto.CompactTextString(m) }
-func (*Hash) ProtoMessage()    {}
+
+// ProtoMessage ...
+func (*Hash) ProtoMessage() {}
+
+// Descriptor ...
 func (*Hash) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4c16552f9fdb66d8, []int{0}
 }
+
+// XXX_Unmarshal ...
 func (m *Hash) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Hash.Unmarshal(m, b)
 }
+
+// XXX_Marshal ...
 func (m *Hash) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Hash.Marshal(b, m, deterministic)
 }
+
+// XXX_Merge ...
 func (m *Hash) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Hash.Merge(m, src)
 }
+
+// XXX_Size ...
 func (m *Hash) XXX_Size() int {
 	return xxx_messageInfo_Hash.Size(m)
 }
+
+// XXX_DiscardUnknown ...
 func (m *Hash) XXX_DiscardUnknown() {
 	xxx_messageInfo_Hash.DiscardUnknown(m)
 }
 
 var xxx_messageInfo_Hash proto.InternalMessageInfo
 
+// GetMd5 ...
 func (m *Hash) GetMd5() string {
 	if m != nil {
 		return m.Md5
@@ -63,6 +82,7 @@ func (m *Hash) GetMd5() string {
 	return ""
 }
 
+// GetSha256 ...
 func (m *Hash) GetSha256() string {
 	if m != nil {
 		return m.Sha256
@@ -70,6 +90,7 @@ func (m *Hash) GetSha256() string {
 	return ""
 }
 
+// EncryptRequest ...
 type EncryptRequest struct {
 	Source               string   `protobuf:"bytes,1,opt,name=source,proto3" json:"source,omitempty"`
 	Destination          string   `protobuf:"bytes,2,opt,name=destination,proto3" json:"destination,omitempty"`
@@ -79,30 +100,48 @@ type EncryptRequest struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *EncryptRequest) Reset()         { *m = EncryptRequest{} }
+// Reset ...
+func (m *EncryptRequest) Reset() { *m = EncryptRequest{} }
+
+// String ...
 func (m *EncryptRequest) String() string { return proto.CompactTextString(m) }
-func (*EncryptRequest) ProtoMessage()    {}
+
+// ProtoMessage ...
+func (*EncryptRequest) ProtoMessage() {}
+
+// Descriptor ...
 func (*EncryptRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4c16552f9fdb66d8, []int{1}
 }
+
+// XXX_Unmarshal ...
 func (m *EncryptRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_EncryptRequest.Unmarshal(m, b)
 }
+
+// XXX_Marshal ...
 func (m *EncryptRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_EncryptRequest.Marshal(b, m, deterministic)
 }
+
+// XXX_Merge ...
 func (m *EncryptRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_EncryptRequest.Merge(m, src)
 }
+
+// XXX_Size ...
 func (m *EncryptRequest) XXX_Size() int {
 	return xxx_messageInfo_EncryptRequest.Size(m)
 }
+
+// XXX_DiscardUnknown ...
 func (m *EncryptRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_EncryptRequest.DiscardUnknown(m)
 }
 
 var xxx_messageInfo_EncryptRequest proto.InternalMessageInfo
 
+// GetSource ...
 func (m *EncryptRequest) GetSource() string {
 	if m != nil {
 		return m.Source
@@ -110,6 +149,7 @@ func (m *EncryptRequest) GetSource() string {
 	return ""
 }
 
+// GetDestination ...
 func (m *EncryptRequest) GetDestination() string {
 	if m != nil {
 		return m.Destination
@@ -117,6 +157,7 @@ func (m *EncryptRequest) GetDestination() string {
 	return ""
 }
 
+// GetKey ...
 func (m *EncryptRequest) GetKey() string {
 	if m != nil {
 		return m.Key
@@ -124,6 +165,7 @@ func (m *EncryptRequest) GetKey() string {
 	return ""
 }
 
+// EncryptResponse ...
 type EncryptResponse struct {
 	SourceHash           *Hash    `protobuf:"bytes,1,opt,name=source_hash,json=sourceHash,proto3" json:"source_hash,omitempty"`
 	DestinationHash      *Hash    `protobuf:"bytes,2,opt,name=destination_hash,json=destinationHash,proto3" json:"destination_hash,omitempty"`
@@ -134,30 +176,48 @@ type EncryptResponse struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *EncryptResponse) Reset()         { *m = EncryptResponse{} }
+// Reset ...
+func (m *EncryptResponse) Reset() { *m = EncryptResponse{} }
+
+// String ...
 func (m *EncryptResponse) String() string { return proto.CompactTextString(m) }
-func (*EncryptResponse) ProtoMessage()    {}
+
+// ProtoMessage ...
+func (*EncryptResponse) ProtoMessage() {}
+
+// Descriptor ...
 func (*EncryptResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4c16552f9fdb66d8, []int{2}
 }
+
+// XXX_Unmarshal ...
 func (m *EncryptResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_EncryptResponse.Unmarshal(m, b)
 }
+
+// XXX_Marshal ...
 func (m *EncryptResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_EncryptResponse.Marshal(b, m, deterministic)
 }
+
+// XXX_Merge ...
 func (m *EncryptResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_EncryptResponse.Merge(m, src)
 }
+
+// XXX_Size ...
 func (m *EncryptResponse) XXX_Size() int {
 	return xxx_messageInfo_EncryptResponse.Size(m)
 }
+
+// XXX_DiscardUnknown ...
 func (m *EncryptResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_EncryptResponse.DiscardUnknown(m)
 }
 
 var xxx_messageInfo_EncryptResponse proto.InternalMessageInfo
 
+// GetSourceHash ...
 func (m *EncryptResponse) GetSourceHash() *Hash {
 	if m != nil {
 		return m.SourceHash
@@ -165,6 +225,7 @@ func (m *EncryptResponse) GetSourceHash() *Hash {
 	return nil
 }
 
+// GetDestinationHash ...
 func (m *EncryptResponse) GetDestinationHash() *Hash {
 	if m != nil {
 		return m.DestinationHash
@@ -172,6 +233,7 @@ func (m *EncryptResponse) GetDestinationHash() *Hash {
 	return nil
 }
 
+// GetRandomNonce ...
 func (m *EncryptResponse) GetRandomNonce() string {
 	if m != nil {
 		return m.RandomNonce
@@ -179,6 +241,7 @@ func (m *EncryptResponse) GetRandomNonce() string {
 	return ""
 }
 
+// GetRandomKey ...
 func (m *EncryptResponse) GetRandomKey() string {
 	if m != nil {
 		return m.RandomKey
@@ -186,6 +249,7 @@ func (m *EncryptResponse) GetRandomKey() string {
 	return ""
 }
 
+// DecryptRequest ...
 type DecryptRequest struct {
 	Source               string   `protobuf:"bytes,1,opt,name=source,proto3" json:"source,omitempty"`
 	Destination          string   `protobuf:"bytes,2,opt,name=destination,proto3" json:"destination,omitempty"`
@@ -196,30 +260,48 @@ type DecryptRequest struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *DecryptRequest) Reset()         { *m = DecryptRequest{} }
+// Reset ...
+func (m *DecryptRequest) Reset() { *m = DecryptRequest{} }
+
+// String ...
 func (m *DecryptRequest) String() string { return proto.CompactTextString(m) }
-func (*DecryptRequest) ProtoMessage()    {}
+
+// ProtoMessage ...
+func (*DecryptRequest) ProtoMessage() {}
+
+// Descriptor ...
 func (*DecryptRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4c16552f9fdb66d8, []int{3}
 }
+
+// XXX_Unmarshal ...
 func (m *DecryptRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DecryptRequest.Unmarshal(m, b)
 }
+
+// XXX_Marshal ...
 func (m *DecryptRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_DecryptRequest.Marshal(b, m, deterministic)
 }
+
+// XXX_Merge ...
 func (m *DecryptRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_DecryptRequest.Merge(m, src)
 }
+
+// XXX_Size ...
 func (m *DecryptRequest) XXX_Size() int {
 	return xxx_messageInfo_DecryptRequest.Size(m)
 }
+
+// XXX_DiscardUnknown ...
 func (m *DecryptRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_DecryptRequest.DiscardUnknown(m)
 }
 
 var xxx_messageInfo_DecryptRequest proto.InternalMessageInfo
 
+// GetSource ...
 func (m *DecryptRequest) GetSource() string {
 	if m != nil {
 		return m.Source
@@ -227,6 +309,7 @@ func (m *DecryptRequest) GetSource() string {
 	return ""
 }
 
+// GetDestination ...
 func (m *DecryptRequest) GetDestination() string {
 	if m != nil {
 		return m.Destination
@@ -234,6 +317,7 @@ func (m *DecryptRequest) GetDestination() string {
 	return ""
 }
 
+// GetNonce ...
 func (m *DecryptRequest) GetNonce() string {
 	if m != nil {
 		return m.Nonce
@@ -241,6 +325,7 @@ func (m *DecryptRequest) GetNonce() string {
 	return ""
 }
 
+// GetKey ...
 func (m *DecryptRequest) GetKey() string {
 	if m != nil {
 		return m.Key
@@ -248,6 +333,7 @@ func (m *DecryptRequest) GetKey() string {
 	return ""
 }
 
+// DecryptResponse ...
 type DecryptResponse struct {
 	SourceHash           *Hash    `protobuf:"bytes,1,opt,name=source_hash,json=sourceHash,proto3" json:"source_hash,omitempty"`
 	DestinationHash      *Hash    `protobuf:"bytes,2,opt,name=destination_hash,json=destinationHash,proto3" json:"destination_hash,omitempty"`
@@ -256,30 +342,48 @@ type DecryptResponse struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *DecryptResponse) Reset()         { *m = DecryptResponse{} }
+// Reset ...
+func (m *DecryptResponse) Reset() { *m = DecryptResponse{} }
+
+// String ...
 func (m *DecryptResponse) String() string { return proto.CompactTextString(m) }
-func (*DecryptResponse) ProtoMessage()    {}
+
+// ProtoMessage ...
+func (*DecryptResponse) ProtoMessage() {}
+
+// Descriptor ...
 func (*DecryptResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4c16552f9fdb66d8, []int{4}
 }
+
+// XXX_Unmarshal ...
 func (m *DecryptResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DecryptResponse.Unmarshal(m, b)
 }
+
+// XXX_Marshal ...
 func (m *DecryptResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_DecryptResponse.Marshal(b, m, deterministic)
 }
+
+// XXX_Merge ...
 func (m *DecryptResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_DecryptResponse.Merge(m, src)
 }
+
+// XXX_Size ...
 func (m *DecryptResponse) XXX_Size() int {
 	return xxx_messageInfo_DecryptResponse.Size(m)
 }
+
+// XXX_DiscardUnknown ...
 func (m *DecryptResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_DecryptResponse.DiscardUnknown(m)
 }
 
 var xxx_messageInfo_DecryptResponse proto.InternalMessageInfo
 
+// GetSourceHash ...
 func (m *DecryptResponse) GetSourceHash() *Hash {
 	if m != nil {
 		return m.SourceHash
@@ -287,6 +391,7 @@ func (m *DecryptResponse) GetSourceHash() *Hash {
 	return nil
 }
 
+// GetDestinationHash ...
 func (m *DecryptResponse) GetDestinationHash() *Hash {
 	if m != nil {
 		return m.DestinationHash
@@ -347,10 +452,12 @@ type encryptorClient struct {
 	cc *grpc.ClientConn
 }
 
+// NewEncryptorClient ...
 func NewEncryptorClient(cc *grpc.ClientConn) EncryptorClient {
 	return &encryptorClient{cc}
 }
 
+// Encrypt ...
 func (c *encryptorClient) Encrypt(ctx context.Context, in *EncryptRequest, opts ...grpc.CallOption) (*EncryptResponse, error) {
 	out := new(EncryptResponse)
 	err := c.cc.Invoke(ctx, "/model.Encryptor/Encrypt", in, out, opts...)
@@ -369,10 +476,12 @@ type EncryptorServer interface {
 type UnimplementedEncryptorServer struct {
 }
 
+// Encrypt ...
 func (*UnimplementedEncryptorServer) Encrypt(ctx context.Context, req *EncryptRequest) (*EncryptResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Encrypt not implemented")
 }
 
+// RegisterEncryptorServer ...
 func RegisterEncryptorServer(s *grpc.Server, srv EncryptorServer) {
 	s.RegisterService(&_Encryptor_serviceDesc, srv)
 }
@@ -419,10 +528,12 @@ type decryptorClient struct {
 	cc *grpc.ClientConn
 }
 
+// NewDecryptorClient ...
 func NewDecryptorClient(cc *grpc.ClientConn) DecryptorClient {
 	return &decryptorClient{cc}
 }
 
+// Decrypt ...
 func (c *decryptorClient) Decrypt(ctx context.Context, in *DecryptRequest, opts ...grpc.CallOption) (*DecryptResponse, error) {
 	out := new(DecryptResponse)
 	err := c.cc.Invoke(ctx, "/model.Decryptor/Decrypt", in, out, opts...)
@@ -441,10 +552,12 @@ type DecryptorServer interface {
 type UnimplementedDecryptorServer struct {
 }
 
+// Decrypt ...
 func (*UnimplementedDecryptorServer) Decrypt(ctx context.Context, req *DecryptRequest) (*DecryptResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Decrypt not implemented")
 }
 
+// RegisterDecryptorServer ...
 func RegisterDecryptorServer(s *grpc.Server, srv DecryptorServer) {
 	s.RegisterService(&_Decryptor_serviceDesc, srv)
 }

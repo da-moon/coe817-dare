@@ -64,7 +64,7 @@ func (c *Command) readConfig() *Config {
 		"json file to read config from")
 	cmdFlags.Var((*flags.AppendSliceValue)(&configFiles), "config-dir",
 		"directory of json files to read")
-	logLevl := flags.LogLevelFlag(cmdFlags)
+	logLevel := flags.LogLevelFlag(cmdFlags)
 	encryptorPath := flags.EncryptorPathFlag(cmdFlags)
 	decryptorPath := flags.DecryptorPathFlag(cmdFlags)
 	apiAddr := flags.APIAddrFlag(cmdFlags)
@@ -74,7 +74,7 @@ func (c *Command) readConfig() *Config {
 		return nil
 	}
 	cmdConfig.DevelopmentMode = *dev
-	cmdConfig.LogLevel = *logLevl
+	cmdConfig.LogLevel = *logLevel
 	cmdConfig.EncryptorPath = *encryptorPath
 	cmdConfig.DecryptorPath = *decryptorPath
 	cmdConfig.APIAddr = *apiAddr
@@ -98,9 +98,6 @@ func (c *Command) readConfig() *Config {
 		config = MergeConfig(config, fileConfig)
 	}
 	config = MergeConfig(config, &cmdConfig)
-	if !config.DevelopmentMode {
-		config.LogLevel = "INFO"
-	}
 	return config
 }
 

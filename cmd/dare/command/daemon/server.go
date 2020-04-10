@@ -34,7 +34,7 @@ func (c *Command) startAPIEngine(
 		apiListener,
 		logOutput,
 		logWriter)
-	c.Ui.Output("Bifrost api running!")
+	c.Ui.Output("DARE daemon api running!")
 	c.Ui.Info(fmt.Sprintf("                   API addr            : '%s'", config.APIAddr))
 	c.Ui.Info(fmt.Sprintf("                   Authorization Header: '%s'", config.APIPassword))
 

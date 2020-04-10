@@ -38,7 +38,7 @@ type Service struct {
 //     --header "Authorization: 12445" \
 // 	--header "Content-type: application/json" \
 //     --data @- \
-//     http://127.0.0.1:8081/rpc  | jq -r
+//     http://127.0.0.1:8080/rpc  | jq -r
 func (s *Service) Encrypt(r *http.Request, req *model.EncryptRequest, res *model.EncryptResponse) error {
 	s.logger.Printf("[INFO] daemon-service: Encrypt Called")
 	// We don't want to see the plugin logs.
@@ -63,6 +63,7 @@ func (s *Service) Encrypt(r *http.Request, req *model.EncryptRequest, res *model
 		AllowedProtocols: []plugin.Protocol{
 			plugin.ProtocolNetRPC, plugin.ProtocolGRPC},
 	})
+
 	defer client.Kill()
 	// Connect via RPC
 	rpcClient, err := client.Client()
@@ -70,22 +71,46 @@ func (s *Service) Encrypt(r *http.Request, req *model.EncryptRequest, res *model
 		err = stacktrace.Propagate(err, "failed to return the protocol client for encrypt engine connection")
 		return err
 	}
+	s.logger.Printf("[DEBUG] encryptor plugin client is ready")
+
 	// Request the plugin
 	raw, err := rpcClient.Dispense("encryptor_grpc")
 	if err != nil {
-		err = stacktrace.Propagate(err, "RPC Client could not dispense a new instance of encryptor_grpc")
+		err = stacktrace.Propagate(err, "RPC Client could not dispense a new instance of encryptor grpc")
 		return err
 	}
+	s.logger.Printf("[DEBUG] a new instance of encryptor grpc was dispenced")
+
 	// We should have a encrypt store now! This feels like a normal interface
 	// implementation but is in fact over an RPC connection.
-	encryptor := raw.(shared.EncryptorInterface)
-	srcHash, dstHash, err := encryptor.Encrypt(req.Source, req.Destination)
+	encryptor, ok := raw.(shared.EncryptorInterface)
+	if !ok {
+		err = stacktrace.NewError("could not convert the dispensed interface to implementation")
+		s.logger.Printf("[DEBUG] error : %#v", err)
+		return err
+
+	}
+	s.logger.Printf("[DEBUG] encryptor interface converted to impl")
+	res, err = encryptor.Encrypt(req)
 	if err != nil {
 		err = stacktrace.Propagate(err, "encryptor failed to encrypt given input")
+		s.logger.Printf("[DEBUG] error : %#v", err)
 		return err
 	}
-	res.DestinationHash = dstHash
-	res.SourceHash = srcHash
+	s.logger.Printf("[DEBUG] encryptor plugin response is %#v %#v %#v", res.GetSourceHash(), res.GetDestinationHash(), res)
+	res = &model.EncryptResponse{
+		SourceHash: &model.Hash{
+			Sha256: "adasdsd",
+			Md5:    "adasdsd",
+		},
+		DestinationHash: &model.Hash{
+			Sha256: "adasdsd",
+			Md5:    "adasdsd",
+		},
+		RandomNonce: "fadjfadakasd",
+		RandomKey:   "askdjklandjkald",
+	}
+
 	return nil
 }
 
@@ -144,12 +169,10 @@ func (s *Service) Decrypt(r *http.Request, req *model.DecryptRequest, res *model
 	// We should have a encrypt store now! This feels like a normal interface
 	// implementation but is in fact over an RPC connection.
 	decryptor := raw.(shared.DecryptorInterface)
-	srcHash, dstHash, err := decryptor.Decrypt(req.Source, req.Destination)
+	res, err = decryptor.Decrypt(req)
 	if err != nil {
 		err = stacktrace.Propagate(err, "decryptor failed to decrypt given input")
 		return err
 	}
-	res.DestinationHash = dstHash
-	res.SourceHash = srcHash
 	return nil
 }

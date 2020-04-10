@@ -21,13 +21,10 @@ MOD=on
 GO_PKG=github.com/da-moon/coe817-dare
 
 
-.PHONY: go-build full-build build-darwin build-linux build-windows go-clean go-dependancy go-print 
-.SILENT: go-build full-build build-darwin build-linux build-windows go-clean go-dependancy go-print
-go-print:
-	- $(info some random stuff)
-	# - @$(MAKE) --no-print-directory -f $(THIS_FILE) $(GO_BUILD_LINUX_TARGETS)
-	- $(info ${GO_PKG})
-	- $(info ${VERSION})
+.PHONY: go-build full-build build-darwin build-linux build-windows go-clean go-dependancy go-targets 
+.SILENT: go-build full-build build-darwin build-linux build-windows go-clean go-dependancy go-targets
+go-targets:
+	- $(info  $(GO_BUILD_TARGETS) $(GO_BUILD_OS_TARGETS))
 
 go-build: go-clean go-dependancy
 	- $(call print_running_target)

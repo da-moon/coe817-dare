@@ -29,7 +29,7 @@ dd:
 
 run: kill
 	- $(call print_running_target)
-	- bin$(PSEP)dare daemon --log-level=info --api-addr=127.0.0.1:${PORT} > $(PWD)/server.log 2>&1 &
+	- bin$(PSEP)dare daemon --log-level=debug --api-addr=127.0.0.1:${PORT} > $(PWD)/server.log 2>&1 &
 	- $(call print_completed_target)
 kill :
 	- $(call print_running_target)

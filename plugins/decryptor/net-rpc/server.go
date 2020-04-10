@@ -13,10 +13,7 @@ type Server struct {
 
 // Decrypt ...
 func (s *Server) Decrypt(_req *model.DecryptRequest, _resp *model.DecryptResponse) error {
-	sourceHash, destinationHash, err := s.Impl.Decrypt(
-		_req.Source,
-		_req.Destination,
-	)
+	_resp, err := s.Impl.Decrypt(_req)
 	if err != nil {
 		err = stacktrace.Propagate(err, "Decryptrequest call failed with request %#v", &model.DecryptRequest{
 			Source:      _req.Source,
@@ -24,10 +21,6 @@ func (s *Server) Decrypt(_req *model.DecryptRequest, _resp *model.DecryptRespons
 		})
 		return err
 	}
-
-	_resp.SourceHash = sourceHash
-	_resp.DestinationHash = destinationHash
-
 	return nil
 
 }

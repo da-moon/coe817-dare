@@ -1,12 +1,11 @@
 package decryptor
 
 import (
-	"golang.org/x/crypto/nacl/box"
-	"io"
-	"sync"
-
 	config "github.com/da-moon/coe817-dare/pkg/dare/config"
 	"github.com/palantir/stacktrace"
+	box "golang.org/x/crypto/nacl/box"
+	"io"
+	"sync"
 )
 
 // Writer ...
@@ -34,9 +33,12 @@ func NewWriter(
 }
 
 // decrypt ..
-func (e *Writer) Write(p []byte) (n int, err error) {
-	e.decrypt(p)
-	n, err = e.writer.Write(e.buf)
+func (d *Writer) Write(p []byte) (n int, err error) {
+	err = d.decrypt(p)
+	if err != nil {
+		return 0, err
+	}
+	n, err = d.writer.Write(d.buf)
 	if err != nil {
 		err = stacktrace.Propagate(err, "decryptor could not finish writing due to failure of underlying io.reader")
 
@@ -46,10 +48,17 @@ func (e *Writer) Write(p []byte) (n int, err error) {
 }
 
 // decrypt ...
-func (e *Writer) decrypt(p []byte) {
-	e.stateLock.Lock()
-	defer e.stateLock.Unlock()
-	e.buf = box.SealAfterPrecomputation(nil, p, e.nonce, e.sharedKey)
+func (d *Writer) decrypt(p []byte) error {
+	d.stateLock.Lock()
+	defer d.stateLock.Unlock()
+	var ok bool
+
+	d.buf, ok = box.OpenAfterPrecomputation(nil, p, d.nonce, d.sharedKey)
+	if !ok {
+		err := stacktrace.NewError("box.OpenAfterPrecomputation returned false. can be due to verification failure")
+		return err
+	}
 	// copying first 24 bytes of output as current nonce for nonce chaining
-	copy(e.nonce[:], e.buf[:24])
+	copy(d.nonce[:], p[:24])
+	return nil
 }

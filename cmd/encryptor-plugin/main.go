@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	model "github.com/da-moon/coe817-dare/model"
 	grpc "github.com/da-moon/coe817-dare/plugins/encryptor/grpc"
 	shared "github.com/da-moon/coe817-dare/plugins/shared"
@@ -8,10 +9,12 @@ import (
 )
 
 // Encrypt - this is the struct that implements engine operations
-type Encrypt struct{}
+type Encrypt struct {
+}
 
 // Encrypt - Implementation of Encrypt method for go engine
-func (Encrypt) Encrypt(source string, destination string) (*model.Hash, *model.Hash, error) {
+func (e *Encrypt) Encrypt(req *model.EncryptRequest) (*model.EncryptResponse, error) {
+	fmt.Println("ENCRYPT PLUGIN BSCKEND")
 	srcHash := &model.Hash{
 		Md5:    "[encrypt] src md5hash",
 		Sha256: "[encrypt] src sha256hash",
@@ -20,7 +23,14 @@ func (Encrypt) Encrypt(source string, destination string) (*model.Hash, *model.H
 		Md5:    "[encrypt] dst md5hash",
 		Sha256: "[encrypt] dst sha256hash",
 	}
-	return srcHash, dstHash, nil
+	result := &model.EncryptResponse{
+		SourceHash:      srcHash,
+		DestinationHash: dstHash,
+		RandomNonce:     "adajsiodjaiofaio",
+		RandomKey:       "adajsiodjaiofaio",
+	}
+	fmt.Println(result)
+	return result, nil
 
 }
 func main() {

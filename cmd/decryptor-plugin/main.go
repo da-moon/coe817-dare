@@ -11,7 +11,7 @@ import (
 type Decrypt struct{}
 
 // Decrypt - Implementation of Decrypt method for go engine
-func (Decrypt) Decrypt(source string, destination string) (*model.Hash, *model.Hash, error) {
+func (Decrypt) Decrypt(req *model.DecryptRequest) (*model.DecryptResponse, error) {
 	srcHash := &model.Hash{
 		Md5:    "[Decrypt] src md5hash",
 		Sha256: "[Decrypt] src sha256hash",
@@ -20,7 +20,11 @@ func (Decrypt) Decrypt(source string, destination string) (*model.Hash, *model.H
 		Md5:    "[Decrypt] dst md5hash",
 		Sha256: "[Decrypt] dst sha256hash",
 	}
-	return srcHash, dstHash, nil
+	resp := &model.DecryptResponse{
+		SourceHash:      srcHash,
+		DestinationHash: dstHash,
+	}
+	return resp, nil
 }
 
 // ServeConfig - This is the plugin config thet is used in main function of engine

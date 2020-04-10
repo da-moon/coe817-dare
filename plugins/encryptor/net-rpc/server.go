@@ -13,10 +13,7 @@ type Server struct {
 
 // Encrypt ...
 func (s *Server) Encrypt(_req *model.EncryptRequest, _resp *model.EncryptResponse) error {
-	sourceHash, destinationHash, err := s.Impl.Encrypt(
-		_req.Source,
-		_req.Destination,
-	)
+	_resp, err := s.Impl.Encrypt(_req)
 	if err != nil {
 		err = stacktrace.Propagate(err, "Encryptrequest call failed with request %#v", &model.EncryptRequest{
 			Source:      _req.Source,
@@ -24,10 +21,6 @@ func (s *Server) Encrypt(_req *model.EncryptRequest, _resp *model.EncryptRespons
 		})
 		return err
 	}
-
-	_resp.SourceHash = sourceHash
-	_resp.DestinationHash = destinationHash
-
 	return nil
 
 }

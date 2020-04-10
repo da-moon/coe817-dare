@@ -55,7 +55,10 @@ func (r *Reader) Read(p []byte) (int, error) {
 			fmt.Printf("err + %v\n", err)
 			return n, err
 		}
-		r.decrypt(buffer[:bytesRead])
+		err = r.decrypt(buffer[:bytesRead])
+		if err != nil {
+			return 0, err
+		}
 		r.stateLock.Lock()
 		nn, err := r.buf.Read(p)
 		if err != nil {
@@ -65,8 +68,6 @@ func (r *Reader) Read(p []byte) (int, error) {
 		}
 		n += nn
 		r.stateLock.Unlock()
-		fmt.Println("iter done")
-
 	}
 }
 
@@ -74,7 +75,12 @@ func (r *Reader) Read(p []byte) (int, error) {
 func (r *Reader) decrypt(p []byte) error {
 	r.stateLock.Lock()
 	defer r.stateLock.Unlock()
-	_, err := r.buf.Write(box.SealAfterPrecomputation(nil, p, r.nonce, r.sharedKey))
+	buf, ok := box.OpenAfterPrecomputation(nil, p, r.nonce, r.sharedKey)
+	if !ok {
+		err := stacktrace.NewError("box.OpenAfterPrecomputation returned false. can be due to verification failure")
+		return err
+	}
+	_, err := r.buf.Write(buf)
 	if err != nil {
 		err = stacktrace.Propagate(err, "could not write the decrypted payload to underlying buffer")
 		return err
