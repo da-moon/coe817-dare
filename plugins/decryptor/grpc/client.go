@@ -12,16 +12,10 @@ type Client struct {
 }
 
 // Decrypt ...
-func (c *Client) Decrypt(source string, destination string) (*model.Hash, *model.Hash, error) {
-	_resp, err := c.client.Decrypt(context.Background(), &model.DecryptRequest{
-		Source:      source,
-		Destination: destination,
-	})
+func (c *Client) Decrypt(req *model.DecryptRequest) (*model.DecryptResponse, error) {
+	_resp, err := c.client.Decrypt(context.Background(), req)
 	if err != nil {
-		err = stacktrace.Propagate(err, "Decrypt call failed with request %#v", &model.DecryptRequest{
-			Source:      source,
-			Destination: destination,
-		})
+		err = stacktrace.Propagate(err, "Decrypt call failed with request %#v", req)
 	}
-	return _resp.SourceHash, _resp.DestinationHash, err
+	return _resp, err
 }

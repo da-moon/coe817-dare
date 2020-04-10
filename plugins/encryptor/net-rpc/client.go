@@ -10,17 +10,11 @@ import (
 type Client struct{ client *rpc.Client }
 
 // Encrypt ...
-func (c *Client) Encrypt(source string, destination string) (*model.Hash, *model.Hash, error) {
+func (c *Client) Encrypt(req *model.EncryptRequest) (*model.EncryptResponse, error) {
 	var _resp model.EncryptResponse
-	err := c.client.Call("Plugin.Encrypt", &model.EncryptRequest{
-		Source:      source,
-		Destination: destination,
-	}, &_resp)
+	err := c.client.Call("Plugin.Encrypt", req, &_resp)
 	if err != nil {
-		err = stacktrace.Propagate(err, "Encrypt call failed with request %#v", &model.EncryptRequest{
-			Source:      source,
-			Destination: destination,
-		})
+		err = stacktrace.Propagate(err, "Encrypt call failed with request %#v", req)
 	}
-	return _resp.SourceHash, _resp.DestinationHash, err
+	return &_resp, err
 }

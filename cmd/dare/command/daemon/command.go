@@ -10,7 +10,7 @@ import (
 	"syscall"
 	"time"
 
-	dare "github.com/da-moon/coe817-dare/dare"
+	daemon "github.com/da-moon/coe817-dare/daemon"
 	view "github.com/da-moon/coe817-dare/pkg/view"
 	logutils "github.com/hashicorp/logutils"
 	cli "github.com/mitchellh/cli"
@@ -164,7 +164,7 @@ Options:
   -api-addr=127.0.0.1:8080 Address to bind the daemon json API listener.
   -api-password=secret     Daemon API password, used as Authorization 
                            header when sending JSON requests .
-  -dev                     starts bifrost agent in development mode
+  -dev                     starts dare agent in development mode
   -config-file=foo         Path to a JSON file to read configuration from.
                            This can be specified multiple times.
   -config-dir=foo          Path to a directory to read configuration files
@@ -172,7 +172,6 @@ Options:
                            as configuration in this directory in alphabetical
                            order.
   -log-level=info          Log level used in the encryption process.
-  -master-key=foo          Master Key for encrypting data.
   -encryptor-path=foo      Path encryptor plugin is located at.
   -decryptor-path=foo      Path decryptor plugin is located at.
 `
@@ -180,7 +179,7 @@ Options:
 }
 
 func (c *Command) setupCore(config *Config, logOutput io.Writer) *Core {
-	coreConfig := dare.DefaultCoreConfig()
+	coreConfig := daemon.DefaultCoreConfig()
 	coreConfig.Protocol = uint8(config.Protocol)
 	c.Ui.Output("Creating dare daemon core...")
 	core, err := Create(config, coreConfig, logOutput)

@@ -14,18 +14,12 @@ type Server struct {
 
 // Decrypt ...
 func (s *Server) Decrypt(ctx context.Context, _req *model.DecryptRequest) (*model.DecryptResponse, error) {
-	sourceHash, destinationHash, err := s.Impl.Decrypt(
-		_req.Source,
-		_req.Destination,
-	)
+	resp, err := s.Impl.Decrypt(_req)
 	if err != nil {
 		err = stacktrace.Propagate(err, "Decrypt call failed with request %#v", &model.DecryptRequest{
 			Source:      _req.Source,
 			Destination: _req.Destination,
 		})
 	}
-	return &model.DecryptResponse{
-		SourceHash:      sourceHash,
-		DestinationHash: destinationHash,
-	}, nil
+	return resp, nil
 }

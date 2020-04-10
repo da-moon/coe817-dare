@@ -1,4 +1,4 @@
-package encryptor
+package decryptor
 
 import (
 	"bytes"
@@ -51,15 +51,18 @@ func (r *Reader) Read(p []byte) (int, error) {
 			r.buf.Reset()
 			return n, io.EOF
 		} else if err != nil {
-			err = stacktrace.Propagate(err, "encryptor could not finish reading due to failure of underlying io.reader")
+			err = stacktrace.Propagate(err, "decryptor could not finish reading due to failure of underlying io.reader")
 			fmt.Printf("err + %v\n", err)
 			return n, err
 		}
-		r.encrypt(buffer[:bytesRead])
+		err = r.decrypt(buffer[:bytesRead])
+		if err != nil {
+			return 0, err
+		}
 		r.stateLock.Lock()
 		nn, err := r.buf.Read(p)
 		if err != nil {
-			err = stacktrace.Propagate(err, "encryptor could not finish reading due to failure of underlying io.reader")
+			err = stacktrace.Propagate(err, "decryptor could not finish reading due to failure of underlying io.reader")
 			fmt.Printf("err + %v\n", err)
 			return n, err
 		}
@@ -68,18 +71,22 @@ func (r *Reader) Read(p []byte) (int, error) {
 	}
 }
 
-// encrypt ...
-func (r *Reader) encrypt(p []byte) error {
+// decrypt ...
+func (r *Reader) decrypt(p []byte) error {
 	r.stateLock.Lock()
 	defer r.stateLock.Unlock()
-	_, err := r.buf.Write(box.SealAfterPrecomputation(nil, p, r.nonce, r.sharedKey))
+	buf, ok := box.OpenAfterPrecomputation(nil, p, r.nonce, r.sharedKey)
+	if !ok {
+		err := stacktrace.NewError("box.OpenAfterPrecomputation returned false. can be due to verification failure")
+		return err
+	}
+	_, err := r.buf.Write(buf)
 	if err != nil {
-		err = stacktrace.Propagate(err, "could not write the encrypted payload to underlying buffer")
+		err = stacktrace.Propagate(err, "could not write the decrypted payload to underlying buffer")
 		return err
 	}
 	// copying first 24 bytes of output as current nonce for nonce chaining
 	copy(r.nonce[:], r.buf.Bytes()[:24])
-	fmt.Printf("[TRACE] encrypt.reader about to io.Copy")
 	return nil
 }
 

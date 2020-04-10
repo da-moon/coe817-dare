@@ -12,16 +12,10 @@ type Client struct {
 }
 
 // Encrypt ...
-func (c *Client) Encrypt(source string, destination string) (*model.Hash, *model.Hash, error) {
-	_resp, err := c.client.Encrypt(context.Background(), &model.EncryptRequest{
-		Source:      source,
-		Destination: destination,
-	})
+func (c *Client) Encrypt(req *model.EncryptRequest) (*model.EncryptResponse, error) {
+	_resp, err := c.client.Encrypt(context.Background(), req)
 	if err != nil {
-		err = stacktrace.Propagate(err, "Encrypt call failed with request %#v", &model.EncryptRequest{
-			Source:      source,
-			Destination: destination,
-		})
+		err = stacktrace.Propagate(err, "Encrypt call failed with request %#v", req)
 	}
-	return _resp.SourceHash, _resp.DestinationHash, err
+	return _resp, err
 }

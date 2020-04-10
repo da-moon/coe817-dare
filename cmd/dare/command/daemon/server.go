@@ -34,10 +34,15 @@ func (c *Command) startAPIEngine(
 		apiListener,
 		logOutput,
 		logWriter)
-	c.Ui.Output("Bifrost api running!")
+
+	c.Ui.Output("DARE daemon api running!")
 	c.Ui.Info(fmt.Sprintf("                   API addr            : '%s'", config.APIAddr))
 	c.Ui.Info(fmt.Sprintf("                   Authorization Header: '%s'", config.APIPassword))
-
+	if core.conf.DevelopmentMode {
+		c.Ui.Warn(fmt.Sprintf("                   API is in development mode"))
+		// c.Ui.Warn(fmt.Sprintf("                   Dev Nonce: '%s'", devNonce))
+		// c.Ui.Warn(fmt.Sprintf("                   Dev Key: '%s'", devKey))
+	}
 	return ipc
 }
 

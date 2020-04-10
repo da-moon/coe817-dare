@@ -1,8 +1,7 @@
 package daemon
 
 import (
-	dare "github.com/da-moon/coe817-dare/dare"
-	stacktrace "github.com/palantir/stacktrace"
+	daemon "github.com/da-moon/coe817-dare/daemon"
 	"io"
 	"log"
 	"os"
@@ -11,7 +10,7 @@ import (
 
 // Core ...
 type Core struct {
-	conf         *dare.CoreConfig
+	conf         *daemon.CoreConfig
 	logger       *log.Logger
 	shutdown     bool
 	shutdownCh   chan struct{}
@@ -19,14 +18,13 @@ type Core struct {
 }
 
 // Create ...
-func Create(coreConf *Config, conf *dare.CoreConfig, logOutput io.Writer) (*Core, error) {
+func Create(coreConf *Config, conf *daemon.CoreConfig, logOutput io.Writer) (*Core, error) {
 
 	if logOutput == nil {
 		logOutput = os.Stderr
 	}
 	conf.LogOutput = logOutput
 	conf.DevelopmentMode = coreConf.DevelopmentMode
-	conf.MasterKey = coreConf.MasterKey
 	conf.Protocol = uint8(coreConf.Protocol)
 	// todo remove this ... it may be very useless
 	conf.EncryptorPath = coreConf.EncryptorPath
@@ -45,9 +43,6 @@ func Create(coreConf *Config, conf *dare.CoreConfig, logOutput io.Writer) (*Core
 // Start ...
 func (a *Core) Start() error {
 	a.logger.Printf("[INFO] dare daemon core: starting...")
-	if len(a.conf.MasterKey) == 0 {
-		return stacktrace.NewError("master key could not be found")
-	}
 	return nil
 }
 

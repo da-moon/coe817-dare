@@ -86,6 +86,7 @@ func (a *API) startAPI() {
 	})
 	service.encryptor = a.core.conf.EncryptorPath
 	service.decryptor = a.core.conf.DecryptorPath
+	service.dev = a.core.conf.DevelopmentMode
 	baseRouter := router.GenerateRPC2Routes([]router.JSON2{
 		{
 			Namespace: "",

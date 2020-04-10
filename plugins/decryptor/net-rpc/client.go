@@ -10,17 +10,11 @@ import (
 type Client struct{ client *rpc.Client }
 
 // Decrypt ...
-func (c *Client) Decrypt(source string, destination string) (*model.Hash, *model.Hash, error) {
+func (c *Client) Decrypt(req *model.DecryptRequest) (*model.DecryptResponse, error) {
 	var _resp model.DecryptResponse
-	err := c.client.Call("Plugin.Decrypt", &model.DecryptRequest{
-		Source:      source,
-		Destination: destination,
-	}, &_resp)
+	err := c.client.Call("Plugin.Decrypt", req, &_resp)
 	if err != nil {
-		err = stacktrace.Propagate(err, "Decrypt call failed with request %#v", &model.DecryptRequest{
-			Source:      source,
-			Destination: destination,
-		})
+		err = stacktrace.Propagate(err, "Decrypt call failed with request %#v", req)
 	}
-	return _resp.SourceHash, _resp.DestinationHash, err
+	return &_resp, err
 }

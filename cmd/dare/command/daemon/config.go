@@ -7,7 +7,7 @@ import (
 	"flag"
 	"fmt"
 	flags "github.com/da-moon/coe817-dare/cmd/dare/flags"
-	dare "github.com/da-moon/coe817-dare/dare"
+	daemon "github.com/da-moon/coe817-dare/daemon"
 	mapstructure "github.com/mitchellh/mapstructure"
 	"io"
 	"os"
@@ -16,13 +16,14 @@ import (
 	"strings"
 )
 
+const devNonce = "85d2bdff2b3c8b83814dd20da55ec1d5449f815d21b11d95"
+const devKey = "48868145ed69ef5b7d37346470ade518c38f47e91a8102f1b83419d69bb6b835"
 const jwtSecretLen = 32
 
 type dirEnts []os.FileInfo
 
 // Config ...
 type Config struct {
-	MasterKey       string `mapstructure:"master_key"`
 	EncryptorPath   string `mapstructure:"encryptor_path"`
 	DecryptorPath   string `mapstructure:"decryptor_path"`
 	APIAddr         string `mapstructure:"api_addr"`
@@ -47,7 +48,7 @@ func DefaultConfig() *Config {
 	return &Config{
 		LogLevel:        "INFO",
 		DevelopmentMode: false,
-		Protocol:        dare.CoreVersionMax,
+		Protocol:        daemon.CoreVersionMax,
 		APIAddr:         "127.0.0.1:8080",
 		APIPassword:     base64.StdEncoding.EncodeToString(bytes),
 		EncryptorPath:   filepath.Join(path, "encryptor"),
@@ -65,8 +66,7 @@ func (c *Command) readConfig() *Config {
 		"json file to read config from")
 	cmdFlags.Var((*flags.AppendSliceValue)(&configFiles), "config-dir",
 		"directory of json files to read")
-	masterKey := flags.MasterKeyFlag(cmdFlags)
-	logLevl := flags.LogLevelFlag(cmdFlags)
+	logLevel := flags.LogLevelFlag(cmdFlags)
 	encryptorPath := flags.EncryptorPathFlag(cmdFlags)
 	decryptorPath := flags.DecryptorPathFlag(cmdFlags)
 	apiAddr := flags.APIAddrFlag(cmdFlags)
@@ -76,8 +76,7 @@ func (c *Command) readConfig() *Config {
 		return nil
 	}
 	cmdConfig.DevelopmentMode = *dev
-	cmdConfig.LogLevel = *logLevl
-	cmdConfig.MasterKey = *masterKey
+	cmdConfig.LogLevel = *logLevel
 	cmdConfig.EncryptorPath = *encryptorPath
 	cmdConfig.DecryptorPath = *decryptorPath
 	cmdConfig.APIAddr = *apiAddr
@@ -101,15 +100,7 @@ func (c *Command) readConfig() *Config {
 		config = MergeConfig(config, fileConfig)
 	}
 	config = MergeConfig(config, &cmdConfig)
-	if !config.DevelopmentMode {
-		config.LogLevel = "INFO"
-	}
 	return config
-}
-
-// EncryptBytes returns the encryption key configured.
-func (c *Config) EncryptBytes() ([]byte, error) {
-	return base64.StdEncoding.DecodeString(c.MasterKey)
 }
 
 // DecodeConfig ...
@@ -151,9 +142,6 @@ func containsKey(keys []string, key string) bool {
 func MergeConfig(a, b *Config) *Config {
 	result := *a
 
-	if b.MasterKey != "" {
-		result.MasterKey = b.MasterKey
-	}
 	if b.EncryptorPath != "" {
 		result.EncryptorPath = b.EncryptorPath
 	}
