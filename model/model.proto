@@ -15,13 +15,11 @@ message EncryptRequest {
 }
 
 message EncryptResponse {
-    Hash source_hash = 1;
-    Hash destination_hash = 2;
-    string random_nonce = 3;
-    string random_key = 4;
+    Hash output_hash = 1;
+    string random_nonce = 2;
+    string random_key = 3;
 }
 service Decryptor {
-
     rpc Decrypt(DecryptRequest) returns (DecryptResponse){
     }
 }
@@ -34,6 +32,5 @@ message DecryptRequest {
 }
 
 message DecryptResponse {
-    Hash source_hash = 1;
-    Hash destination_hash = 2;
+    Hash output_hash = 1;
 }

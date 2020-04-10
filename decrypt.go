@@ -3,17 +3,10 @@ package dare
 import (
 	config "github.com/da-moon/coe817-dare/pkg/dare/config"
 	decryptor "github.com/da-moon/coe817-dare/pkg/dare/decryptor"
-	// stacktrace "github.com/palantir/stacktrace"
 	"io"
-	// "os"
 )
 
-// // DecryptReader returns an io.reader that
-// // Decrypts data with a passed key as it is reading it
-// // from an io stream (eg socket , file).
-// func DecryptReader(reader io.Reader, key [32]byte, nonce [24]byte) io.Reader {
-// 	return decryptor.NewReader(reader, nonce, &key)
-// }
+// DecryptWithWriter ...
 func DecryptWithWriter(
 	dstwriter io.Writer,
 	srcReader io.Reader,
@@ -29,7 +22,10 @@ func DecryptWithWriter(
 		} else if err != nil {
 			return err
 		}
-		decWriter.Write(buffer[:bytesRead])
+		_, err = decWriter.Write(buffer[:bytesRead])
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }

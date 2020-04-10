@@ -16,6 +16,8 @@ import (
 	"strings"
 )
 
+const devNonce = "85d2bdff2b3c8b83814dd20da55ec1d5449f815d21b11d95"
+const devKey = "48868145ed69ef5b7d37346470ade518c38f47e91a8102f1b83419d69bb6b835"
 const jwtSecretLen = 32
 
 type dirEnts []os.FileInfo

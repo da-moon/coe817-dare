@@ -1,10 +1,8 @@
 package dare
 
 import (
-	// "fmt"
 	config "github.com/da-moon/coe817-dare/pkg/dare/config"
 	encryptor "github.com/da-moon/coe817-dare/pkg/dare/encryptor"
-	// stacktrace "github.com/palantir/stacktrace"
 	"io"
 )
 
@@ -25,7 +23,10 @@ func EncryptWithWriter(
 		} else if err != nil {
 			return err
 		}
-		encWriter.Write(buffer[:bytesRead])
+		_, err = encWriter.Write(buffer[:bytesRead])
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }

@@ -9,17 +9,17 @@ include build/makefiles/target/tests/config/config.mk
 include build/makefiles/target/tests/dare/dare.mk
 THIS_FILE := $(firstword $(MAKEFILE_LIST))
 SELF_DIR := $(dir $(THIS_FILE))
-.PHONY: test build clean run demo-encrypt demo-decrypt kill linux-dd dd temp-clean
-.SILENT: test build clean run demo-encrypt demo-decrypt kill linux-dd dd temp-clean
+.PHONY: test build clean run demo-encrypt encrypt-first demo-decrypt decrypt-first kill linux-dd dd temp-clean
+.SILENT: test build clean run demo-encrypt encrypt-first demo-decrypt decrypt-first kill linux-dd dd temp-clean
 PORT:=8082
 RPC_ENDPOINT:=rpc
 # demo file size in megabytes
-FILE_SIZE=1
+FILE_SIZE=50
 PLAIN_PATH:= /tmp/plain
 ENCRYPT_PATH:= /tmp/encrypted
 DECRYPT_PATH:= /tmp/decrypted
-NONCE=e66e6cde14ab4a1f5d3f5290cb1e2544844fd732af72b5c4
-KEY=f3e01c54e13dadb2bb363b0a611caedb2ed9fdf502da8d05ac1293b825a6c717
+NONCE=f8a9c278c70c0fd7083eb4050895ceeb8c3748b9fd16f920
+KEY=4d6a9b0b51c29adeb6c1b4f25606796b6dd94d6bcf1244d5f05871a99c1750e1
 build: 
 	- $(call print_running_target)
 	- @$(MAKE) --no-print-directory -f $(THIS_FILE) go-build
@@ -34,9 +34,9 @@ dd :
 	- $(call print_completed_target)
 run: kill
 	- $(call print_running_target)
-	- bin$(PSEP)dare daemon --log-level=debug --api-addr=127.0.0.1:${PORT} > $(PWD)/server.log 2>&1 &
+	- bin$(PSEP)dare daemon --api-addr=127.0.0.1:${PORT} > $(PWD)/server.log 2>&1 &
 	- $(call print_completed_target)
-demo-encrypt: dd
+encrypt-first: 
 	- $(call print_running_target)
 	- $(eval request=$(shell jq -n \
   --arg source "${PLAIN_PATH}" \
@@ -57,17 +57,22 @@ demo-encrypt: dd
 	--header "Content-type: application/json" \
     --data @- \
     http://127.0.0.1:${PORT}/${RPC_ENDPOINT}  | jq -r 
-	- $(eval src_md5=$(shell md5sum $(PLAIN_PATH)))
-	- $(eval dst_md5=$(shell md5sum $(ENCRYPT_PATH)))
-	- $(eval src_sha=$(shell sha256sum $(PLAIN_PATH)))
-	- $(eval dst_sha=$(shell sha256sum $(ENCRYPT_PATH)))
-	- $(call print_completed_target,src md5 : $(src_md5))
-	- $(call print_completed_target,src sha256 : $(src_sha))
-	- $(call print_completed_target,dst md5 : $(dst_md5))
-	- $(call print_completed_target,dst sha256 : $(dst_sha))
 	- $(call print_completed_target)
 
-demo-decrypt: 
+demo-encrypt: encrypt-first
+	- $(call print_running_target)
+	- $(eval demo_enc_src_md5=$(shell md5sum $(PLAIN_PATH)))
+	- $(eval demo_enc_dst_md5=$(shell md5sum $(ENCRYPT_PATH)))
+	- $(eval demo_enc_src_sha=$(shell sha256sum $(PLAIN_PATH)))
+	- $(eval demo_enc_dst_sha=$(shell sha256sum $(ENCRYPT_PATH)))
+	- $(call print_completed_target,plaintext md5 : $(demo_enc_src_md5))
+	- $(call print_completed_target,encrypted md5 : $(demo_enc_dst_md5))
+	- $(call print_completed_target,plaintext sha256 : $(demo_enc_src_sha))
+	- $(call print_completed_target,encrypted sha256 : $(demo_enc_dst_sha))
+	- $(call print_completed_target)
+
+
+decrypt-first:
 	- $(call print_running_target)
 	- $(eval request=$(shell jq -n \
   --arg source "${ENCRYPT_PATH}" \
@@ -92,20 +97,22 @@ demo-decrypt:
 		--header "Content-type: application/json" \
 		--data @- \
 		http://127.0.0.1:${PORT}/${RPC_ENDPOINT}  | jq -r
-	- $(eval src_md5=$(shell md5sum $(ENCRYPT_PATH)))
-	- $(eval dst_md5=$(shell md5sum $(DECRYPT_PATH)))
-	- $(eval plain_md5=$(shell md5sum $(PLAIN_PATH)))
-	- $(eval src_sha=$(shell sha256sum $(ENCRYPT_PATH)))
-	- $(eval dst_sha=$(shell sha256sum $(DECRYPT_PATH)))
-	- $(eval plain_sha=$(shell sha256sum $(PLAIN_PATH)))
-	- $(call print_completed_target,src md5 : $(src_md5))
-	- $(call print_completed_target,src sha256 : $(src_sha))
-	- $(call print_completed_target,dst md5 : $(dst_md5))
-	- $(call print_completed_target,dst sha256 : $(dst_sha))
-	- $(call print_completed_target,original plaintext md5 : $(plain_md5))
-	- $(call print_completed_target,original plaintext sha256 : $(plain_sha))
 	- $(call print_completed_target)
 
+demo-decrypt: decrypt-first
+	- $(call print_running_target)
+	- $(eval demo_dec_src_md5=$(shell md5sum $(ENCRYPT_PATH)))
+	- $(eval demo_dec_dst_md5=$(shell md5sum $(DECRYPT_PATH)))
+	- $(eval demo_dec_plain_md5=$(shell md5sum $(PLAIN_PATH)))
+	- $(eval demo_dec_src_sha=$(shell sha256sum $(ENCRYPT_PATH)))
+	- $(eval demo_dec_dst_sha=$(shell sha256sum $(DECRYPT_PATH)))
+	- $(eval demo_dec_plain_sha=$(shell sha256sum $(PLAIN_PATH)))
+	- $(call print_completed_target,encrypted md5 : $(demo_dec_src_md5))
+	- $(call print_completed_target,decrypted md5 : $(demo_dec_dst_md5))
+	- $(call print_completed_target,original plaintext md5 : $(demo_dec_plain_md5))
+	- $(call print_completed_target,encrypted sha256 : $(demo_dec_src_sha))
+	- $(call print_completed_target,decrypted sha256 : $(demo_dec_dst_sha))
+	- $(call print_completed_target,original plaintext sha256 : $(demo_dec_plain_sha))
 clean:
 	- $(call print_running_target)
 	- @$(MAKE) --no-print-directory -f $(THIS_FILE) go-clean
