@@ -16,6 +16,20 @@ func MasterKeyFlag(f *flag.FlagSet) *string {
 		"Master Key used in encryption-decryption process.")
 }
 
+// DDSizeFlag ...
+func DDSizeFlag(f *flag.FlagSet) *string {
+	result := os.Getenv("DARE_DEMO_SIZE")
+	return f.String("size", result,
+		"demo file size.")
+}
+
+// DDPathFlag ...
+func DDPathFlag(f *flag.FlagSet) *string {
+	result := os.Getenv("DARE_DEMO_PATH")
+	return f.String("path", result,
+		"path to store demo file.")
+}
+
 // EncryptorPathFlag ...
 func EncryptorPathFlag(f *flag.FlagSet) *string {
 	result := os.Getenv("DARE_ENCRYPTOR_PLUGIN")

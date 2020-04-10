@@ -6,7 +6,7 @@ import (
 	"fmt"
 	dare "github.com/da-moon/coe817-dare"
 	model "github.com/da-moon/coe817-dare/model"
-	hashsink "github.com/da-moon/coe817-dare/pkg/hashsink"
+	// hashsink "github.com/da-moon/coe817-dare/pkg/hashsink"
 	stacktrace "github.com/palantir/stacktrace"
 	"os"
 )
@@ -65,58 +65,44 @@ func (Decrypt) Decrypt(req *model.DecryptRequest) (*model.DecryptResponse, error
 		return nil, err
 	}
 
-	fmt.Printf("decrypt backend src stated")
-	srcFile, err := os.Open(req.Source)
-	if srcFile != nil {
-		defer srcFile.Close()
-	}
-	fmt.Printf("decrypt backend src opened")
-
+	fmt.Printf("decrypt backend src stated\n")
+	encSourceFile, err := os.Open(req.Source)
 	if err != nil {
 		err = stacktrace.Propagate(err, "could not decrypt due to failure in opening source file at %s", req.Source)
 		return nil, err
 	}
-	dstFile, err := os.OpenFile(
-		req.Destination,
-		os.O_CREATE|os.O_TRUNC|os.O_WRONLY,
-		0600)
-
-	if dstFile == nil {
-		err = stacktrace.NewError("could not successfully get a file handle for %s", req.Destination)
-		return nil, err
-	}
-
-	if dstFile != nil {
-		defer dstFile.Close()
-	}
+	defer encSourceFile.Close()
+	decDestinationFile, err := os.Create(req.Destination)
 	if err != nil {
-		err = stacktrace.Propagate(err, "Could not create empty file at (%s) ", req.Destination)
+		err = stacktrace.NewError("could not successfully create a new empty file for %s", req.Destination)
 		return nil, err
 	}
-	fmt.Printf("decrypt backend dstFile opened")
+	defer decDestinationFile.Close()
+	fmt.Printf("about to decrypt\n")
+	err = dare.DecryptWithWriter(decDestinationFile, encSourceFile, key, nonce)
 
-	srcReader := hashsink.NewReader(srcFile, 0)
-	dstWriter := hashsink.NewWriter(dstFile)
-	_, err = dare.Decrypt(
-		dstFile,
-		srcReader,
-		key,
-		nonce,
-	)
-	fmt.Printf("decrypt backend dstFile opened")
+	// srcReader := hashsink.NewReader(srcFile, 0)
+	// dstWriter := hashsink.NewWriter(dstFile)
+	// _, err = dare.Decrypt(
+	// 	dstFile,
+	// 	srcReader,
+	// 	key,
+	// 	nonce,
+	// )
+	// fmt.Printf("decrypt backend dstFile opened")
 
 	if err != nil {
 		err = stacktrace.Propagate(err, "Could not Decrypt file at '%s' and store it in '%s' with key '%s' and nonce '%s'", req.Source, req.Destination, req.Key, req.Nonce)
 		return nil, err
 
 	}
-	result.SourceHash = &model.Hash{
-		Md5:    srcReader.MD5HexString(),
-		Sha256: srcReader.SHA256HexString(),
-	}
-	result.DestinationHash = &model.Hash{
-		Md5:    dstWriter.MD5HexString(),
-		Sha256: dstWriter.SHA256HexString(),
-	}
+	// result.SourceHash = &model.Hash{
+	// 	Md5:    srcReader.MD5HexString(),
+	// 	Sha256: srcReader.SHA256HexString(),
+	// }
+	// result.DestinationHash = &model.Hash{
+	// 	Md5:    dstWriter.MD5HexString(),
+	// 	Sha256: dstWriter.SHA256HexString(),
+	// }
 	return result, nil
 }

@@ -9,8 +9,8 @@ include build/makefiles/target/tests/config/config.mk
 include build/makefiles/target/tests/dare/dare.mk
 THIS_FILE := $(firstword $(MAKEFILE_LIST))
 SELF_DIR := $(dir $(THIS_FILE))
-.PHONY: test build clean run demo-encrypt demo-decrypt kill dd 
-.SILENT: test build clean run demo-encrypt demo-decrypt kill dd 
+.PHONY: test build clean run demo-encrypt demo-decrypt kill linux-dd dd temp-clean
+.SILENT: test build clean run demo-encrypt demo-decrypt kill linux-dd dd temp-clean
 PORT:=8082
 RPC_ENDPOINT:=rpc
 # demo file size in megabytes
@@ -18,22 +18,25 @@ FILE_SIZE=1
 PLAIN_PATH:= /tmp/plain
 ENCRYPT_PATH:= /tmp/encrypted
 DECRYPT_PATH:= /tmp/decrypted
-NONCE=6846aba2350ad80a050c2824117acda9bca9c1afeebc160a
-KEY=1c0390e0b14b61885fe4cb38ad935eb67f22be8f96c3e7c8c431f412b9cdf328
+NONCE=e66e6cde14ab4a1f5d3f5290cb1e2544844fd732af72b5c4
+KEY=f3e01c54e13dadb2bb363b0a611caedb2ed9fdf502da8d05ac1293b825a6c717
 build: 
 	- $(call print_running_target)
 	- @$(MAKE) --no-print-directory -f $(THIS_FILE) go-build
 	- $(call print_completed_target)
-dd: 
+linux-dd: 
 	- $(call print_running_target)
 	- dd if=/dev/urandom of=${PLAIN_PATH} bs=1048576 count=${FILE_SIZE}
 	- $(call print_completed_target)
-
+dd : 
+	- $(call print_running_target)
+	- bin$(PSEP)dare dd --size=${FILE_SIZE}MB --path=${PLAIN_PATH}
+	- $(call print_completed_target)
 run: kill
 	- $(call print_running_target)
 	- bin$(PSEP)dare daemon --log-level=debug --api-addr=127.0.0.1:${PORT} > $(PWD)/server.log 2>&1 &
 	- $(call print_completed_target)
-demo-encrypt: dd  
+demo-encrypt: dd
 	- $(call print_running_target)
 	- $(eval request=$(shell jq -n \
   --arg source "${PLAIN_PATH}" \
@@ -89,15 +92,30 @@ demo-decrypt:
 		--header "Content-type: application/json" \
 		--data @- \
 		http://127.0.0.1:${PORT}/${RPC_ENDPOINT}  | jq -r
-
+	- $(eval src_md5=$(shell md5sum $(ENCRYPT_PATH)))
+	- $(eval dst_md5=$(shell md5sum $(DECRYPT_PATH)))
+	- $(eval plain_md5=$(shell md5sum $(PLAIN_PATH)))
+	- $(eval src_sha=$(shell sha256sum $(ENCRYPT_PATH)))
+	- $(eval dst_sha=$(shell sha256sum $(DECRYPT_PATH)))
+	- $(eval plain_sha=$(shell sha256sum $(PLAIN_PATH)))
+	- $(call print_completed_target,src md5 : $(src_md5))
+	- $(call print_completed_target,src sha256 : $(src_sha))
+	- $(call print_completed_target,dst md5 : $(dst_md5))
+	- $(call print_completed_target,dst sha256 : $(dst_sha))
+	- $(call print_completed_target,original plaintext md5 : $(plain_md5))
+	- $(call print_completed_target,original plaintext sha256 : $(plain_sha))
 	- $(call print_completed_target)
 
 clean:
 	- $(call print_running_target)
 	- @$(MAKE) --no-print-directory -f $(THIS_FILE) go-clean
 	- $(call print_completed_target)
-kill :
+kill : temp-clean
 	- $(call print_running_target)
 	- $(RM) $(PWD)/server.log
 	- for pid in $(shell ps  | grep "dare" | awk '{print $$1}'); do kill -9 "$$pid"; done
+	- $(call print_completed_target)
+temp-clean:
+	- $(call print_running_target)
+	- $(RM) /tmp/go-build*
 	- $(call print_completed_target)

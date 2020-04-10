@@ -68,49 +68,59 @@ func (e *Encrypt) Encrypt(req *model.EncryptRequest) (*model.EncryptResponse, er
 		fmt.Printf("%v\n", err.Error())
 		return nil, err
 	}
-	fmt.Printf("encrypt backend stated")
+	fmt.Printf("encrypt backend stated\n")
 	srcFile, err := os.Open(req.Source)
 	if err != nil {
 		err = stacktrace.Propagate(err, "could not encrypt due to failure in opening source file at %s", req.Source)
 		return nil, err
 	}
 	defer srcFile.Close()
-	dstFile, err := os.OpenFile(
-		req.Destination,
-		os.O_CREATE|os.O_TRUNC|os.O_WRONLY,
-		0600)
-
-	if dstFile == nil {
-		err = stacktrace.NewError("could not successfully get a file handle for %s", req.Destination)
-		return nil, err
-	}
-	defer dstFile.Close()
+	destinationFile, err := os.Create(req.Destination)
 	if err != nil {
-		err = stacktrace.Propagate(err, "Could not create empty file at (%s) ", req.Destination)
+		err = stacktrace.NewError("could not successfully create a new empty file for %s", req.Destination)
 		return nil, err
 	}
-	fmt.Printf("about to encrypt")
+	defer destinationFile.Close()
+	fmt.Printf("about to encrypt\n")
+
+	err = dare.EncryptWithWriter(destinationFile, srcFile, key, nonce)
+
+	// dstFile, err := os.OpenFile(
+	// 	req.Destination,
+	// 	os.O_CREATE|os.O_TRUNC|os.O_WRONLY,
+	// 	0600)
+
+	// if dstFile == nil {
+	// 	err = stacktrace.NewError("could not successfully get a file handle for %s", req.Destination)
+	// 	return nil, err
+	// }
+	// defer dstFile.Close()
+	// if err != nil {
+	// 	err = stacktrace.Propagate(err, "Could not create empty file at (%s) ", req.Destination)
+	// 	return nil, err
+	// }
+	// fmt.Printf("about to encrypt")
 
 	// srcReader := hashsink.NewReader(srcFile, 0)
 	// dstWriter := hashsink.NewWriter(dstFile)
 
-	_, err = dare.Encrypt(
-		dstFile,
-		srcFile,
-		key,
-		nonce,
-	)
+	// _, err = dare.Encrypt(
+	// 	dstFile,
+	// 	srcFile,
+	// 	key,
+	// 	nonce,
+	// )
 	if err != nil {
 		err = stacktrace.Propagate(err, "Could not Encrypt file at '%s' and store it in '%s' ", req.Source, req.Destination)
 		return nil, err
 	}
-	fmt.Printf("about to Sync")
-	err = dstFile.Sync()
-	if err != nil {
-		err = stacktrace.Propagate(err, "Could not Encrypt file at '%s' and store it in '%s' due to flush to disk failure", req.Source, req.Destination)
-		return nil, err
-	}
-	fmt.Printf("about to return ")
+	// fmt.Printf("about to Sync")
+	// err = destinationFile.Sync()
+	// if err != nil {
+	// 	err = stacktrace.Propagate(err, "Could not Encrypt file at '%s' and store it in '%s' due to flush to disk failure", req.Source, req.Destination)
+	// 	return nil, err
+	// }
+	fmt.Printf("encrypt about to return \n")
 	// result.SourceHash = &model.Hash{
 	// 	// Md5:    srcReader.MD5HexString(),
 	// 	// Sha256: srcReader.SHA256HexString(),

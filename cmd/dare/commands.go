@@ -27,6 +27,11 @@ func init() {
 				Ui: ui,
 			}, nil
 		},
+		"dd": func() (cli.Command, error) {
+			return &command.DDCommand{
+				Ui: ui,
+			}, nil
+		},
 		"version": func() (cli.Command, error) {
 			return &command.VersionCommand{
 				Name:              EntryPointName,
