@@ -149,7 +149,7 @@ func (c *Command) handleReload(config *Config, core *Core) *Config {
 
 // Synopsis ...
 func (c *Command) Synopsis() string {
-	return "Encrypts a given input agent"
+	return "data at rest encryption daemon"
 }
 
 // Help ...
@@ -157,7 +157,9 @@ func (c *Command) Help() string {
 	helpText := `
 Usage: dare daemon [options]
 
-  Starts data at rest encryption daemon. 
+  Starts data at rest encryption daemon. it is a long running process
+  that exposes an API endpoint at /rpc which intercepts user JSON messages,
+  relays them to encrypt/decrypt plugins.
 
 Options:
 

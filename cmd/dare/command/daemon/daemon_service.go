@@ -29,7 +29,7 @@ type Service struct {
 // jq -n \
 //   --arg source "/tmp/plain" \
 //   --arg destination "/tmp/encrypted" \
-//   --arg key "my key" \
+//   --arg key "63b76723eb3f9d4f4862b73ff7e39b93c4de129feb4885f1f3feb74dd456e3a5" \
 //   --arg id "1" \
 //   --arg method "Service.Encrypt" \
 //  '{"jsonrpc": "2.0", "method":$method,"params":{"source": $source, "destination":$destination,"key":$key},"id": $id}' | curl \
@@ -111,7 +111,7 @@ func (s *Service) Encrypt(r *http.Request, req *model.EncryptRequest, res *model
 //   --arg source "/tmp/encrypted" \
 //   --arg destination "/tmp/decrypted" \
 // 	 --arg nonce "e12ffdfa6cb6e56238935e32604cfa5538d3ad51a3542daa" \
-//    --arg key "63b76723eb3f9d4f4862b73ff7e39b93c4de129feb4885f1f3feb74dd456e3a5" \
+//   --arg key "63b76723eb3f9d4f4862b73ff7e39b93c4de129feb4885f1f3feb74dd456e3a5" \
 //   --arg id "2" \
 //   --arg method "Service.Decrypt" \
 //  '{"jsonrpc": "2.0", "method":$method,"params":{"source": $source, "destination":$destination, "nonce":$nonce, "key":$key},"id": $id}' | curl \

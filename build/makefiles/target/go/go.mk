@@ -135,7 +135,6 @@ $(GO_BUILD_OS_TARGETS):
 	- $(call print_running_target)
 	- $(eval trimmed=$(@:go-build-%=%))
 	- $(eval GOOS := $(firstword $(subst -, ,$(trimmed))))
-	- $(info $(GOOS) )
 	- $(eval name=$(@:go-build-$(GOOS)-%=%))
 	- $(eval command= GO111MODULE=${MOD})
 	- $(eval command= ${command} CGO_ENABLED=${CGO})

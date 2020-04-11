@@ -2,7 +2,7 @@ package command
 
 import (
 	"crypto/rand"
-	"encoding/base64"
+	"encoding/hex"
 	"fmt"
 	"strings"
 
@@ -19,7 +19,7 @@ var _ cli.Command = &KeygenCommand{}
 
 // Run ...
 func (c *KeygenCommand) Run(_ []string) int {
-	const length = 26
+	const length = 32
 	key := make([]byte, length)
 	n, err := rand.Reader.Read(key)
 	if err != nil {
@@ -30,7 +30,7 @@ func (c *KeygenCommand) Run(_ []string) int {
 		c.Ui.Error(fmt.Sprintf("[ERROR] could not read enough entropy. Generate more entropy!"))
 		return 1
 	}
-	c.Ui.Output(base64.StdEncoding.EncodeToString(key))
+	c.Ui.Output(hex.EncodeToString(key))
 	return 0
 }
 
@@ -43,7 +43,7 @@ func (c *KeygenCommand) Synopsis() string {
 func (c *KeygenCommand) Help() string {
 	helpText := `
 Usage: dare keygen
-  Generates a new encryption key that can be used to for
+  Generates a new 32 byte long encryption key that can be used to for
   encrypting data.
 `
 	return strings.TrimSpace(helpText)

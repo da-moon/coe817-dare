@@ -11,7 +11,7 @@ THIS_FILE := $(firstword $(MAKEFILE_LIST))
 SELF_DIR := $(dir $(THIS_FILE))
 .PHONY: test build clean run demo-encrypt encrypt-first demo-decrypt decrypt-first kill linux-dd dd temp-clean
 .SILENT: test build clean run demo-encrypt encrypt-first demo-decrypt decrypt-first kill linux-dd dd temp-clean
-PORT:=8082
+PORT:=8080
 RPC_ENDPOINT:=rpc
 # demo file size in megabytes
 FILE_SIZE=50
