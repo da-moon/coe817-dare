@@ -252,3 +252,26 @@ to simplify random file generation, we have setup two make targets in main makef
 
 - `make linux-dd` generates random blob with gnu coreutils `dd` tool
 - `make dd` generates a json file filled with random data using `dare dd` subcommand
+
+to customize behavior , change `FILE_SIZE` and `PLAIN_PATH` variables at the start of `$PWD/Makefile`.
+keep in mind that the unit of number in `FILE_SIZE` is Megabytes.
+
+## demo
+
+to fast track and simplify demo process , we have created two make targets `make demo-encrypt` and `make demo-decrypt`
+
+follow the following procedure to build, run , generate random file, encrypt and decrypt it :
+
+1- build : `make build`
+2- run daemon : `make run`
+you can see server output by opening server.log . e.g:
+
+```bash
+tail -f server.log
+```
+
+3- generate a random file either by running `make dd` or make `linux-dd` . 
+4- try encrypting file by running `make demo-encrypt` . 
+based on current makefile variables, it generates a random `50MB` file and encrypts it 
+5- open `$PWD/Makefile` and update `NONCE` and `KEY` variables in it with the response you get from daemon
+6- run make `demo-decrypt`
