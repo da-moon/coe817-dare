@@ -18,11 +18,14 @@ How it executes request ? lets say it got a request for encryption :
 
 1- It would start the binary that is encryptor plugin (path to that binary has to be fed 
 to dare at start  , eg bin/encryptor-plugin)
+
 2- it would establish connection over tcp socket with the binary . at this instance, 
 dare daemon would act as a client of encryptor plugin which behaves as server. 
 there is a handshake process based on a shared secret for dare-plugin connection establishment
+
 3- the plugin would do it's job, i.e open file, encrypt the file and store 
 it and it would send a reply back to dare daemon with post and pre encryption hashes.
+
 4- dare daemon would reply to user a json message that is its reply.
 
 ## request procedure calls
