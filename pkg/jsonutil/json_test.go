@@ -7,7 +7,7 @@ import (
 	"reflect"
 	"strings"
 
-	jsonutil "github.com/da-moon/coe817-dare/pkg/jsonutil"
+	jsonutil "github.com/da-moon/dare-cli/pkg/jsonutil"
 
 	"testing"
 )

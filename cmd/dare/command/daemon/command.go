@@ -10,8 +10,8 @@ import (
 	"syscall"
 	"time"
 
-	daemon "github.com/da-moon/coe817-dare/daemon"
-	view "github.com/da-moon/coe817-dare/pkg/view"
+	daemon "github.com/da-moon/dare-cli/daemon"
+	view "github.com/da-moon/dare-cli/pkg/view"
 	logutils "github.com/hashicorp/logutils"
 	cli "github.com/mitchellh/cli"
 )

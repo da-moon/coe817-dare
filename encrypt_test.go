@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
-	"github.com/da-moon/coe817-dare/pkg/dare/encryptor"
+	"github.com/da-moon/dare-cli/pkg/dare/encryptor"
 	assert "github.com/stretchr/testify/assert"
 	"io"
 	"testing"

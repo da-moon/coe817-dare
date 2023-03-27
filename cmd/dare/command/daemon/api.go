@@ -2,9 +2,9 @@ package daemon
 
 import (
 	"context"
-	response "github.com/da-moon/coe817-dare/pkg/http/response"
-	router "github.com/da-moon/coe817-dare/pkg/http/router"
-	view "github.com/da-moon/coe817-dare/pkg/view"
+	response "github.com/da-moon/dare-cli/pkg/http/response"
+	router "github.com/da-moon/dare-cli/pkg/http/router"
+	view "github.com/da-moon/dare-cli/pkg/view"
 	gorillaHandlers "github.com/gorilla/handlers"
 	hclog "github.com/hashicorp/go-hclog"
 	"strings"

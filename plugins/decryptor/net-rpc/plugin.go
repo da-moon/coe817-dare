@@ -1,7 +1,7 @@
 package netrpc
 
 import (
-	shared "github.com/da-moon/coe817-dare/plugins/shared"
+	shared "github.com/da-moon/dare-cli/plugins/shared"
 	plugin "github.com/hashicorp/go-plugin"
 	rpc "net/rpc"
 )

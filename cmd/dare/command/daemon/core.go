@@ -1,7 +1,7 @@
 package daemon
 
 import (
-	daemon "github.com/da-moon/coe817-dare/daemon"
+	daemon "github.com/da-moon/dare-cli/daemon"
 	"io"
 	"log"
 	"os"

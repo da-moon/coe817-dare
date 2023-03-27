@@ -1,7 +1,7 @@
 package encryptor_test
 
 import (
-	encryptor "github.com/da-moon/coe817-dare/pkg/dare/encryptor"
+	encryptor "github.com/da-moon/dare-cli/pkg/dare/encryptor"
 	"io"
 )
 

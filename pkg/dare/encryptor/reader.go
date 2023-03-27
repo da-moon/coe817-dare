@@ -8,7 +8,7 @@ import (
 
 	box "golang.org/x/crypto/nacl/box"
 
-	config "github.com/da-moon/coe817-dare/pkg/dare/config"
+	config "github.com/da-moon/dare-cli/pkg/dare/config"
 	stacktrace "github.com/palantir/stacktrace"
 )
 

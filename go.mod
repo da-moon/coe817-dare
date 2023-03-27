@@ -1,4 +1,4 @@
-module github.com/da-moon/coe817-dare
+module github.com/da-moon/dare-cli
 
 go 1.14
 

@@ -1,8 +1,8 @@
 package dare
 
 import (
-	config "github.com/da-moon/coe817-dare/pkg/dare/config"
-	encryptor "github.com/da-moon/coe817-dare/pkg/dare/encryptor"
+	config "github.com/da-moon/dare-cli/pkg/dare/config"
+	encryptor "github.com/da-moon/dare-cli/pkg/dare/encryptor"
 	"io"
 )
 

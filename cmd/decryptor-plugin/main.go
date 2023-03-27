@@ -1,9 +1,9 @@
 package main
 
 import (
-	handler "github.com/da-moon/coe817-dare/cmd/decryptor-plugin/handler"
-	grpc "github.com/da-moon/coe817-dare/plugins/decryptor/grpc"
-	shared "github.com/da-moon/coe817-dare/plugins/shared"
+	handler "github.com/da-moon/dare-cli/cmd/decryptor-plugin/handler"
+	grpc "github.com/da-moon/dare-cli/plugins/decryptor/grpc"
+	shared "github.com/da-moon/dare-cli/plugins/shared"
 	plugin "github.com/hashicorp/go-plugin"
 )
 

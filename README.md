@@ -1,6 +1,6 @@
-# coe817-dare
+# dare-cli
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io#https://github.com/da-moon/coe817-dare)
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io#https://github.com/da-moon/dare-cli)
 
 
 ## Overview

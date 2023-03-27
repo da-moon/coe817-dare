@@ -3,9 +3,9 @@ package handler
 import (
 	"crypto/rand"
 	"encoding/hex"
-	dare "github.com/da-moon/coe817-dare"
-	model "github.com/da-moon/coe817-dare/model"
-	hashsink "github.com/da-moon/coe817-dare/pkg/hashsink"
+	dare "github.com/da-moon/dare-cli"
+	model "github.com/da-moon/dare-cli/model"
+	hashsink "github.com/da-moon/dare-cli/pkg/hashsink"
 	stacktrace "github.com/palantir/stacktrace"
 	"io"
 	"os"

@@ -2,7 +2,7 @@ package daemon
 
 import (
 	"fmt"
-	view "github.com/da-moon/coe817-dare/pkg/view"
+	view "github.com/da-moon/dare-cli/pkg/view"
 	stacktrace "github.com/palantir/stacktrace"
 	"io"
 	"net"

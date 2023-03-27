@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/da-moon/coe817-dare/pkg/jsonutil"
+	"github.com/da-moon/dare-cli/pkg/jsonutil"
 )
 
 // WriteErrorJSON - logs and sends a json response to the client

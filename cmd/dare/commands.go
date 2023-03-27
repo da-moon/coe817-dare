@@ -4,8 +4,8 @@ import (
 	"os"
 	"os/signal"
 
-	command "github.com/da-moon/coe817-dare/cmd/dare/command"
-	daemon "github.com/da-moon/coe817-dare/cmd/dare/command/daemon"
+	command "github.com/da-moon/dare-cli/cmd/dare/command"
+	daemon "github.com/da-moon/dare-cli/cmd/dare/command/daemon"
 	cli "github.com/mitchellh/cli"
 )
 

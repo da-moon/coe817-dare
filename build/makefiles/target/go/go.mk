@@ -18,7 +18,7 @@ CGO=0
 GO_ARCHITECTURE=amd64
 GO_IMAGE=golang:buster
 MOD=on
-GO_PKG=github.com/da-moon/coe817-dare
+GO_PKG=github.com/da-moon/dare-cli
 
 
 .PHONY: go-build full-build build-darwin build-linux build-windows go-clean go-dependancy go-targets 

@@ -5,7 +5,7 @@ import (
 	"io"
 	"sync"
 
-	config "github.com/da-moon/coe817-dare/pkg/dare/config"
+	config "github.com/da-moon/dare-cli/pkg/dare/config"
 	"github.com/palantir/stacktrace"
 )
 

@@ -1,12 +1,12 @@
 package daemon
 
 import (
-	model "github.com/da-moon/coe817-dare/model"
-	decryptorGrpc "github.com/da-moon/coe817-dare/plugins/decryptor/grpc"
-	decryptorRpc "github.com/da-moon/coe817-dare/plugins/decryptor/net-rpc"
-	encryptorGrpc "github.com/da-moon/coe817-dare/plugins/encryptor/grpc"
-	encryptorRpc "github.com/da-moon/coe817-dare/plugins/encryptor/net-rpc"
-	shared "github.com/da-moon/coe817-dare/plugins/shared"
+	model "github.com/da-moon/dare-cli/model"
+	decryptorGrpc "github.com/da-moon/dare-cli/plugins/decryptor/grpc"
+	decryptorRpc "github.com/da-moon/dare-cli/plugins/decryptor/net-rpc"
+	encryptorGrpc "github.com/da-moon/dare-cli/plugins/encryptor/grpc"
+	encryptorRpc "github.com/da-moon/dare-cli/plugins/encryptor/net-rpc"
+	shared "github.com/da-moon/dare-cli/plugins/shared"
 	hclog "github.com/hashicorp/go-hclog"
 	plugin "github.com/hashicorp/go-plugin"
 	stacktrace "github.com/palantir/stacktrace"

@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/da-moon/coe817-dare/pkg/http/response"
+	"github.com/da-moon/dare-cli/pkg/http/response"
 )
 
 // HealthCheck -

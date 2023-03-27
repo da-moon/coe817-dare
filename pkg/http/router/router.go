@@ -1,7 +1,7 @@
 package router
 
 import (
-	handlers "github.com/da-moon/coe817-dare/pkg/http/handlers"
+	handlers "github.com/da-moon/dare-cli/pkg/http/handlers"
 	"net/http"
 
 	"github.com/gorilla/mux"

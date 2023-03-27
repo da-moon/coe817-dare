@@ -6,7 +6,7 @@ ifeq ($(DOCKER_ENV),false)
 	- @$(MAKE) --no-print-directory -f $(THIS_FILE) shell cmd=" GO111MODULE=${MOD}\
        CGO_ENABLED=${CGO} \
     GOARCH=${GO_ARCHITECTURE} \
-    go test -timeout -30s github.com/da-moon/coe817-dare/internal/config -run TestEncryptedSize -v \
+    go test -timeout -30s github.com/da-moon/dare-cli/internal/config -run TestEncryptedSize -v \
     "
 	- exit 
 endif
@@ -15,7 +15,7 @@ ifeq ($(DOCKER_ENV),true)
     CGO_ENABLED=${CGO} \
     GOARCH=${GO_ARCHITECTURE} \
     go get -v -d ./... & \
-	go test -timeout -30s github.com/da-moon/coe817-dare/internal/config -run TestEncryptedSize -v "
+	go test -timeout -30s github.com/da-moon/dare-cli/internal/config -run TestEncryptedSize -v "
 	- exit 
 endif
 	- $(call print_completed_target)
@@ -26,7 +26,7 @@ ifeq ($(DOCKER_ENV),false)
 	- @$(MAKE) --no-print-directory -f $(THIS_FILE) shell cmd=" GO111MODULE=${MOD}\
        CGO_ENABLED=${CGO} \
     GOARCH=${GO_ARCHITECTURE} \
-    go test -timeout -30s github.com/da-moon/coe817-dare/internal/config -run TestDecryptedSize -v \
+    go test -timeout -30s github.com/da-moon/dare-cli/internal/config -run TestDecryptedSize -v \
     "
 	- exit 
 endif
@@ -35,7 +35,7 @@ ifeq ($(DOCKER_ENV),true)
     CGO_ENABLED=${CGO} \
     GOARCH=${GO_ARCHITECTURE} \
     go get -v -d ./... & \
-	go test -timeout -30s github.com/da-moon/coe817-dare/internal/config -run TestDecryptedSize -v "
+	go test -timeout -30s github.com/da-moon/dare-cli/internal/config -run TestDecryptedSize -v "
 	- exit 
 endif
 	- $(call print_completed_target)

@@ -1,7 +1,7 @@
 package netrpc
 
 import (
-	model "github.com/da-moon/coe817-dare/model"
+	model "github.com/da-moon/dare-cli/model"
 	stacktrace "github.com/palantir/stacktrace"
 	rpc "net/rpc"
 )

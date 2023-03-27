@@ -3,7 +3,7 @@ package encryptor_test
 import (
 	"bufio"
 	"bytes"
-	"github.com/da-moon/coe817-dare/pkg/dare/encryptor"
+	"github.com/da-moon/dare-cli/pkg/dare/encryptor"
 	"testing"
 )
 

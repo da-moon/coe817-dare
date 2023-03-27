@@ -1,8 +1,8 @@
 package netrpc
 
 import (
-	model "github.com/da-moon/coe817-dare/model"
-	shared "github.com/da-moon/coe817-dare/plugins/shared"
+	model "github.com/da-moon/dare-cli/model"
+	shared "github.com/da-moon/dare-cli/plugins/shared"
 	stacktrace "github.com/palantir/stacktrace"
 )
 

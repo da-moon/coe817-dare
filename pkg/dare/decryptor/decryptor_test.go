@@ -1,7 +1,7 @@
 package decryptor_test
 
 import (
-	decryptor "github.com/da-moon/coe817-dare/pkg/dare/decryptor"
+	decryptor "github.com/da-moon/dare-cli/pkg/dare/decryptor"
 	"io"
 )
 
